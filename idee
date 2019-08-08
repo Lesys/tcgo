@@ -1,0 +1,15 @@
+Le but du programme sera de faire plusieurs listes:
+	- 1 liste avec les cartes communes (et 10% de rare) (1 pioche)
+	- 1 liste avec les cartes rares (et 10% épique) (3 pioches)
+		- 1 liste dans chaque ville différente liée à la
+		caractéristique de la ville et du héros
+	- 1 liste avec les cartes chances (1 pioche)
+	- 1 liste avec les cartes pièges (1 pioche)
+	- 1 liste avec les ennemis (1 pioche)
+
+Total: 7 pioches
+
+
+- Séparer les fonctions en plusieurs fichiers
+- Faire une liste (fichier .txt) et y inclure les valeurs (nombre de carte) des  pioches
+- Faire un Makefile

@@ -1,0 +1,10 @@
+heros_communs 39
+heros_rares_force 12
+heros_rares_determination 16
+heros_rares_charisme 19
+heros_epiques_force 9
+heros_epiques_determination 5
+heros_epiques_charisme 7
+chances 35
+pieges 25
+vilains 14
