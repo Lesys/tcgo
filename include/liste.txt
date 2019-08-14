@@ -1,10 +1,31 @@
-heros_communs 39
-heros_rares_force 12
-heros_rares_determination 16
-heros_rares_charisme 19
-heros_epiques_force 9
-heros_epiques_determination 5
-heros_epiques_charisme 7
-chances 35
-pieges 25
-vilains 14
+PD-001
+PD-003
+PD-003
+PD-003
+PD-004
+PD-004
+PD-004
+PD-003
+PD-005
+PD-005
+PD-005
+PD-006
+PD-006
+PD-006
+PD-007
+PD-007
+PD-007
+PD-008
+PD-008
+PD-008
+PD-009
+PD-009
+PD-009
+PD-010
+PD-010
+PD-010
+PD-012
+PD-012
+PD-012
+PD-013
+PD-013
