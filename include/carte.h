@@ -56,17 +56,39 @@ struct perso {
 
 void carte_afficher(Carte*);
 
-int carte_init(Carte**, char*, char*, char*, int/*, Effet*/, Utilisation, Stat*, char*, Carte*);
+int carte_null(Carte*);
 
-int carte_detruire(Carte**);
-
+/* Début accesseurs / mutateurs */
 int carte_get_ref(Carte*, char**);
+int carte_set_ref(Carte*, char*);
+
 int carte_get_nom(Carte*, char**);
-int carte_get_anime(Carte*, char**);
+int carte_set_nom(Carte*, char*);
+
+int carte_get_nom_anime(Carte*, char**);
+int carte_set_nom_anime(Carte*, char*);
+
 int carte_get_cout(Carte*, int*);
+int carte_set_cout(Carte*, int);
 
 int carte_get_prec(Carte*, Carte**);
+int carte_set_prec(Carte*, Carte*);
 
-int carte_null(Carte*);
+int carte_get_effet(Carte*, Effet*);
+int carte_set_effet(Carte*, Effet);
+
+int carte_get_utilisation(Carte*, Utilisation*);
+int carte_set_utilisation(Carte*, Utilisation);
+
+int carte_get_stat(Carte*, Stat**);
+int carte_set_stat(Carte*, Stat*);
+
+int carte_get_chemin(Carte*, char**);
+int carte_set_chemin(Carte*, char*);
+/* Fin accesseurs / mutateurs */
+
+int carte_detruire(Carte**);
+int carte_init(Carte**, char*, char*, char*, int /*, Effet */, Utilisation, Stat*, char*, Carte*);
+
 
 #endif

@@ -22,10 +22,11 @@ int pioche_limite_exemplaire(Pioche*, Carte*);
 
 int pioche_depiler(Pioche*, Carte**);
 int pioche_empiler(Pioche*, Carte*);
-int pioche_melanger(Pioche*);
+int pioche_melanger(Pioche*); /* TODO */
 
-int pioche_remettre(Pioche*, Carte*);
-int pioche_enlever(Pioche*, char*, Carte**);
+int pioche_nb_carte(Pioche*, int*); /* TODO */
+int pioche_remettre(Pioche*, Carte*); /* TODO */
+int pioche_enlever(Pioche*, char*, Carte**); /* Pour enlever une carte, il faut "sauvegarder" la carte précédente de la pile pour pouvoir changer son "prec" */
 
 int pioche_init(Pioche**, char*);
 int pioche_detruire(Pioche**);

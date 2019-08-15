@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "../include/fonctions.h"
 #include "../include/pioche.h"
@@ -12,9 +13,9 @@ void pioche_afficher(Pioche* p) {
 	Carte* tmp = NULL;
 	int cmp = 1;
 
-	int retour = pioche_get_sommet(p, &c);
+	int retour = pioche_get_sommet(p, &c); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
 
-	if (!retour) {
+	if (!retour) { /* Si on a bien récupéré le sommet et qu'il n'est pas NULL */
 		if (c != NULL) {
 			do {
 				tmp = NULL;
@@ -28,9 +29,9 @@ void pioche_afficher(Pioche* p) {
 				else
 					printf("Problème pioche_depiler\n");
 
-			} while (tmp->prec != NULL && !retour);
+			} while (tmp->prec != NULL && !retour); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) */
 
-			pioche_set_sommet(p, c);
+			pioche_set_sommet(p, c); /* On remet le sommet en place après avoir tout dépilé */
 		}
 		else {
 			printf("Sommet NULL\n");
@@ -175,6 +176,42 @@ int pioche_depiler(Pioche* p, Carte** c) {
 	return retour;
 }
 
+int pioche_melanger(Pioche* p)
+{
+	int retour = 0;
+
+	if (!pioche_null(p)) {
+		if (!pioche_vide(p)) {
+			int i, nb_carte = 0, retour;
+
+			retour = pioche_nb_carte(p, &nb_carte);
+
+/*			if (!retour) {
+				for (i = 0; i < nb_carte - 1; i++) {
+					int j = i + rand() / (NB_DECK_MAX / (nb_carte - i) + 1);
+					Pioche* t = pioche[j];
+					pioche[j] = pioche[i];
+					pioche[i] = t;
+				}
+			}
+			else
+				retour = 3; *//* Problème récupération nombre de carte */
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1;
+
+	return retour;
+}
+
+int pioche_nb_carte(Pioche* p, int* nb_carte) {
+	int retour = 0;
+
+	return retour;
+}
+
 int pioche_get_sommet(Pioche* p, Carte** sommet) {
 	int retour = 0;
 
@@ -204,8 +241,79 @@ int pioche_set_sommet(Pioche* p, Carte* sommet) {
 }
 
 int pioche_enlever(Pioche* p, char* ref, Carte** c) {
+	int retour = 0;
 
-	return 0;
+	if (!pioche_null(p)) {
+			Carte* sommet = NULL;
+			retour = pioche_get_sommet(p, &sommet); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+
+			if (!retour) { /* Si on a bien récupéré le sommet*/
+				char* ref2 = NULL;
+				int trouve = 0;
+				Carte* tmp = NULL;
+				Carte* prec;
+
+				do {
+					prec = tmp;
+					tmp = NULL;
+					retour = pioche_depiler(p, &tmp);
+
+					if (!retour) {
+						retour = carte_get_ref(tmp, &ref2);
+
+						if (!retour)
+							if (strcmp(ref, ref2) == 0) /* Si la référence de la carte correspond à celle qu'on cherche à enlever */
+								trouve = 1;
+
+					} else
+						printf("Problème pioche_depiler\n");
+
+				} while (!retour && !trouve && tmp->prec != NULL); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) et qu'on n'a pas encore trouve la carte voulue*/
+
+				if (trouve) { /* Si on a trouvé la carte; on l'enlève et on la mets dans le paramètre */
+					*c = tmp;
+					retour = carte_set_prec(prec, tmp->prec);
+
+					if (retour)
+						retour = 4;
+				}
+				else
+					retour = 3; /* La ref n'était pas dans la Pioche */
+
+				pioche_set_sommet(p, sommet); /* On remet le sommet en place après avoir tout dépilé */
+			}
+			else
+				retour = 2; /* Problème récupération sommet */
+	}
+	else
+		retour = 1; /* Pioche NULL */
+
+	return retour;
+}
+
+int pioche_remettre(Pioche* p, Carte* c) {
+	int retour = 0;
+
+	if (!pioche_null(p)) {
+		if (!carte_null(c)) {
+			retour = pioche_empiler(p, c); /* Ajout de la carte dans la pioche */
+
+			if (!retour) {
+				retour = pioche_melanger(p); /* Mélange de la pioche après avoir ajouté la carte */
+
+				if (retour)
+					retour = 4; /* Problème lors du mélange */
+			}
+			else
+				retour = 3; /* Problèeme empiler */
+		}
+		else
+			retour = 2; /* Carte NULL */
+	}
+	else
+		retour = 1; /* Pioche NULL */
+
+	return retour;
 }
 
 int pioche_detruire(Pioche** p) {
@@ -307,7 +415,7 @@ fprintf(stderr, "affichage ref get_ref: %s\n", test_chaine);*/
 
 			}
 
-fprintf(stderr, "après tout: %d\n", retour);
+/*fprintf(stderr, "après tout: %d\n", retour);*/
 			if (retour)
 				pioche_detruire(p);
 		}

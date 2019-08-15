@@ -1,11 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/carte.h"
-#include "../include/chara.h"
+#include "../include/stat.h"
 #include "../include/pioche.h"
 
 int main() {
-	Carte* cartes[4];
+
+	char* fichier = "../../include/liste.txt";
+
+	Pioche* p = NULL;
+
+	int retour = pioche_init(&p, fichier);
+
+	if (retour == 0) {
+		fprintf(stderr, "Retour 0 (depuis main).\n");
+		pioche_afficher(p);
+
+		Carte* c = NULL;
+		retour = pioche_enlever(p, "PD-120", &c);
+
+		if (!retour) {
+			fprintf(stderr, "On a bien enlevé la carte\n");
+			carte_afficher(c);
+			fprintf(stderr, "\n\n");
+			pioche_afficher(p);
+		}
+		else {
+			fprintf(stderr, "code retour: %d // problème poiche_enlever\n", retour);
+		}
+	}
+	else
+		fprintf(stderr, "Il y a eu un problème dans l'initialisation du fichier (depuis main).\n");
+
+
+	pioche_detruire(&p);
+
+	return 0;
+/*	Carte* cartes[4];
 	int i;
 
 	for (i = 0; i < 4; i++)
@@ -50,7 +81,7 @@ int main() {
 	pioche_afficher(p);
 
 	pioche_detruire(&p);
-
+*/
 //	int retour;
 
 /*	for (i = 0; i < 4; i++)
