@@ -22,7 +22,6 @@ void pioche_afficher(Pioche* p) {
 				retour = pioche_depiler(p, &tmp);
 
 				if (!retour) {
-
 					printf("Carte %d : ", cmp++);
 					carte_afficher(tmp);
 				}
@@ -56,64 +55,64 @@ int pioche_limite_exemplaire(Pioche* p, Carte* c) {
 
 	if (!pioche_null(p)) {
 		if (!pioche_vide(p)) {
-		if (!carte_null(c)) {
-			char* ref = NULL, *ref2 = NULL;
+			if (!carte_null(c)) {
+				char* ref = NULL, *ref2 = NULL;
 
 /*fprintf(stderr, "Avant get_ref\n");*/
-			if (!carte_get_ref(c, &ref)) { /* Récupération de la référence de la carte recherchée */
+				if (!carte_get_ref(c, &ref)) { /* Récupération de la référence de la carte recherchée */
 /*fprintf(stderr, "Après get_ref: %s\n", ref);*/
 
-				Carte* sommet = NULL;
-				retour = pioche_depiler(p, &sommet); /* Récupération du sommet de la pile pour le remettre à la fin de la boucle */
-
-				if (!retour) {
-					retour = pioche_set_sommet(p, sommet); /* Remets le sommet */
+					Carte* sommet = NULL;
+					retour = pioche_depiler(p, &sommet); /* Récupération du sommet de la pile pour le remettre à la fin de la boucle */
 
 					if (!retour) {
-						Carte* c_temp = NULL;
-						int compteur = 0;
-
-						while (!retour && compteur < NB_EXEMPLAIRE_MAX && !pioche_vide(p) && !(retour = pioche_depiler(p, &c_temp))) { /* Tant qu'il y a une carte dans la pile non analysée et qu'on n'a pas atteint le maximum d'exemplaire de la carte */
-							retour = carte_get_ref(c_temp, &ref2); /* Récupère la référence de la carte actuellement analysée */
-
-							if (!retour) {
-								fprintf(stderr, "%s & %s\n",  ref, ref2);
-								compteur += strcmp(ref, ref2) == 0? 1 : 0; /* Si les deux chaines sont identiques (== même référence), ajoute un compteur */
-							}
-
-							c_temp = NULL; /* Il ne faut pas que la carte se fasse détruire lorsqu'on dépile à nouveau */
-						}
-
-						free(ref2);
+						retour = pioche_set_sommet(p, sommet); /* Remets le sommet */
 
 						if (!retour) {
-							retour = pioche_set_sommet(p, sommet);
+							Carte* c_temp = NULL;
+							int compteur = 0;
+
+							while (!retour && compteur < NB_EXEMPLAIRE_MAX && !pioche_vide(p) && !(retour = pioche_depiler(p, &c_temp))) { /* Tant qu'il y a une carte dans la pile non analysée et qu'on n'a pas atteint le maximum d'exemplaire de la carte */
+								retour = carte_get_ref(c_temp, &ref2); /* Récupère la référence de la carte actuellement analysée */
+
+								if (!retour) {
+									/*fprintf(stderr, "%s & %s\n",  ref, ref2);*/
+									compteur += strcmp(ref, ref2) == 0? 1 : 0; /* Si les deux chaines sont identiques (== même référence), ajoute un compteur */
+								}
+
+								c_temp = NULL; /* Il ne faut pas que la carte se fasse détruire lorsqu'on dépile à nouveau */
+							}
+
+							free(ref2);
 
 							if (!retour) {
-								if (compteur >= NB_EXEMPLAIRE_MAX) {
-									fprintf(stderr, "Nombre d'exemplaire maximum de %s dans le deck atteint.\n", ref);
-									retour = 8; /* Le nombre d'exemplaire maximum dans un deck pour cette carte a été atteint */
+								retour = pioche_set_sommet(p, sommet);
+
+								if (!retour) {
+									if (compteur >= NB_EXEMPLAIRE_MAX) {
+										fprintf(stderr, "Nombre d'exemplaire maximum de %s dans le deck atteint.\n", ref);
+										retour = 8; /* Le nombre d'exemplaire maximum dans un deck pour cette carte a été atteint */
+									}
 								}
+								else
+									retour = 7; /* Problème MAJ sommet à la fin */
 							}
 							else
-								retour = 7; /* Problème MAJ sommet à la fin */
+								retour = 6; /* Problème dans la boucle de recherche */
+
+							free(ref);
 						}
 						else
-							retour = 6; /* Problème dans la boucle de recherche */
-
-						free(ref);
+							retour = 5; /* Problème MAJ sommet au début */
 					}
 					else
-						retour = 5; /* Problème MAJ sommet au début */
+						retour = 4; /* Problème récupération sommet de la pile */
 				}
 				else
-					retour = 4; /* Problème récupération sommet de la pile */
+					retour = 3; /* Problème récupération de la référence de la carte cherchée */
 			}
 			else
-				retour = 3; /* Problème récupération de la référence de la carte cherchée */
-		}
-		else
-			retour = 2; /* Carte à empiler NULL */
+				retour = 2; /* Carte à empiler NULL */
 		}
 		else
 			retour = 0; /* Pioche vide (mais pas un problème) */
@@ -186,16 +185,49 @@ int pioche_melanger(Pioche* p)
 
 			retour = pioche_nb_carte(p, &nb_carte);
 
-/*			if (!retour) {
-				for (i = 0; i < nb_carte - 1; i++) {
-					int j = i + rand() / (NB_DECK_MAX / (nb_carte - i) + 1);
+			if (!retour) {
+				retour = pioche_get_sommet(p, &tmp); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+
+				if (!retour) { /* Si on a bien récupéré le sommet*/
+					*nb_carte = 1;
+					int i = 0;
+
+					for (i = 0; i < nb_carte; i++) { /* TODO récupérer la carte la plus en dessous (puis celle au dessus...) de la pile et l'échanger avec la random */
+
+						while (!retour && tmp->prec != NULL) { /* Tant que la prochaine carte (prec) n'est pas NULL */
+/*fprintf(stderr, "Avant get_prec:\n");
+					carte_afficher(tmp);*/
+							retour = carte_get_prec(tmp, &tmp);
+/*fprintf(stderr, "Après get_prec:\n");
+					carte_afficher(tmp);*/
+
+							if (!retour)
+								(*nb_carte)++;
+							else
+								retour = 5;
+						}
+				}
+				else
+					retour = 4; /* Problème récupération sommet */
+
+
+
+
+
+
+
+
+
+
+/*				for (i = 0; i < nb_carte - 1; i++) { Il faut commencer par la carte la plus en dessous du paquet (== c->prec == NULL)
+					int j = rand() % (NB_DECK_MAX - i)) + 1;
 					Pioche* t = pioche[j];
 					pioche[j] = pioche[i];
 					pioche[i] = t;
-				}
+				}*/
 			}
 			else
-				retour = 3; *//* Problème récupération nombre de carte */
+				retour = 3; /* Problème récupération nombre de carte */
 		}
 		else
 			retour = 2;
@@ -208,6 +240,36 @@ int pioche_melanger(Pioche* p)
 
 int pioche_nb_carte(Pioche* p, int* nb_carte) {
 	int retour = 0;
+
+	if (!pioche_null(p)) {
+		if (!pioche_vide(p)) {
+			Carte* tmp = NULL;
+			retour = pioche_get_sommet(p, &tmp); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+
+			if (!retour) { /* Si on a bien récupéré le sommet*/
+				*nb_carte = 1;
+
+				while (!retour && tmp->prec != NULL) { /* Tant que la prochaine carte (prec) n'est pas NULL */
+/*fprintf(stderr, "Avant get_prec:\n");
+					carte_afficher(tmp);*/
+					retour = carte_get_prec(tmp, &tmp);
+/*fprintf(stderr, "Après get_prec:\n");
+					carte_afficher(tmp);*/
+
+					if (!retour)
+						(*nb_carte)++;
+					else
+						retour = 3;
+				}
+			}
+			else
+				retour = 2; /* Problème récupération sommet */
+		}
+		else
+			*nb_carte = 0; /* La pioche est vide */
+	}
+	else
+		retour = 1; /* Pioche NULL */
 
 	return retour;
 }
@@ -244,46 +306,45 @@ int pioche_enlever(Pioche* p, char* ref, Carte** c) {
 	int retour = 0;
 
 	if (!pioche_null(p)) {
-			Carte* sommet = NULL;
-			retour = pioche_get_sommet(p, &sommet); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+		Carte* sommet = NULL;
+		retour = pioche_get_sommet(p, &sommet); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
 
-			if (!retour) { /* Si on a bien récupéré le sommet*/
-				char* ref2 = NULL;
-				int trouve = 0;
-				Carte* tmp = NULL;
-				Carte* prec;
+		if (!retour) { /* Si on a bien récupéré le sommet*/
+			char* ref2 = NULL;
+			int trouve = 0;
+			Carte* tmp = sommet;
+			Carte* prec = NULL;
 
-				do {
-					prec = tmp;
-					tmp = NULL;
-					retour = pioche_depiler(p, &tmp);
+			do {
+				prec = tmp;
+				tmp = NULL;
+				retour = carte_get_prec(prec, &tmp);
 
-					if (!retour) {
-						retour = carte_get_ref(tmp, &ref2);
+				if (!retour) {
+					retour = carte_get_ref(tmp, &ref2);
 
-						if (!retour)
-							if (strcmp(ref, ref2) == 0) /* Si la référence de la carte correspond à celle qu'on cherche à enlever */
-								trouve = 1;
+					if (!retour)
+						if (strcmp(ref, ref2) == 0) /* Si la référence de la carte correspond à celle qu'on cherche à enlever */
+							trouve = 1;
 
-					} else
-						printf("Problème pioche_depiler\n");
+				} else
+					printf("Problème pioche_depiler\n");
 
-				} while (!retour && !trouve && tmp->prec != NULL); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) et qu'on n'a pas encore trouve la carte voulue*/
+			} while (!retour && !trouve && tmp->prec != NULL); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) et qu'on n'a pas encore trouve la carte voulue*/
 
-				if (trouve) { /* Si on a trouvé la carte; on l'enlève et on la mets dans le paramètre */
-					*c = tmp;
-					retour = carte_set_prec(prec, tmp->prec);
+			if (trouve) { /* Si on a trouvé la carte; on l'enlève et on la mets dans le paramètre */
+				*c = tmp;
+				retour = carte_set_prec(prec, tmp->prec);
 
-					if (retour)
-						retour = 4;
-				}
-				else
-					retour = 3; /* La ref n'était pas dans la Pioche */
-
-				pioche_set_sommet(p, sommet); /* On remet le sommet en place après avoir tout dépilé */
+				if (retour)
+					retour = 4;
 			}
 			else
-				retour = 2; /* Problème récupération sommet */
+				retour = 3; /* La ref n'était pas dans la Pioche */
+//			pioche_set_sommet(p, sommet); /* On remet le sommet en place après avoir tout dépilé */
+		}
+		else
+			retour = 2; /* Problème récupération sommet */
 	}
 	else
 		retour = 1; /* Pioche NULL */
@@ -299,9 +360,12 @@ int pioche_remettre(Pioche* p, Carte* c) {
 			retour = pioche_empiler(p, c); /* Ajout de la carte dans la pioche */
 
 			if (!retour) {
-				retour = pioche_melanger(p); /* Mélange de la pioche après avoir ajouté la carte */
+				int i = 0;
 
-				if (retour)
+				for (i = 0; i <= 3 && !retour; i++) /* On mélange X fois */
+					retour = pioche_melanger(p); /* Mélange de la pioche après avoir ajouté la carte */
+
+				if (i <= 3 && retour)
 					retour = 4; /* Problème lors du mélange */
 			}
 			else

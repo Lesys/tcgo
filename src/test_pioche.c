@@ -14,7 +14,16 @@ int main() {
 
 	if (retour == 0) {
 		fprintf(stderr, "Retour 0 (depuis main).\n");
-		pioche_afficher(p);
+/*		pioche_afficher(p);*/
+
+		int nb_carte;
+
+		retour = pioche_nb_carte(p, &nb_carte);
+
+		if (!retour)
+			fprintf(stderr, "\n====Nombre de carte: %d\n", nb_carte);
+		else
+			fprintf(stderr, "Problème nb_carte: %d\n", retour);
 
 		Carte* c = NULL;
 		retour = pioche_enlever(p, "PD-120", &c);
@@ -23,10 +32,18 @@ int main() {
 			fprintf(stderr, "On a bien enlevé la carte\n");
 			carte_afficher(c);
 			fprintf(stderr, "\n\n");
-			pioche_afficher(p);
+/*			pioche_afficher(p);*/
+
+			retour = pioche_remettre(p, c);
+			if (!retour) {
+				fprintf(stderr, "On a bien remis la carte\n");
+/*				pioche_afficher(p);*/
+			}
+			else
+				fprintf(stderr, "code retour: %d // problème pioche_remettre\n", retour);
 		}
 		else {
-			fprintf(stderr, "code retour: %d // problème poiche_enlever\n", retour);
+			fprintf(stderr, "code retour: %d // problème pioche_enlever\n", retour);
 		}
 	}
 	else
