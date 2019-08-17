@@ -22,6 +22,7 @@ int pioche_limite_exemplaire(Pioche*, Carte*);
 
 int pioche_depiler(Pioche*, Carte**);
 int pioche_empiler(Pioche*, Carte*);
+int pioche_recup_carte_par_emplacement(Pioche*, int, Carte**);
 int pioche_melanger(Pioche*); /* TODO */
 
 int pioche_nb_carte(Pioche*, int*); /* TODO */

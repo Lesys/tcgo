@@ -175,65 +175,164 @@ int pioche_depiler(Pioche* p, Carte** c) {
 	return retour;
 }
 
+int pioche_recup_carte_par_emplacement(Pioche* p, int emp, Carte** c) {
+	int retour = 0;
+
+	if (!pioche_null(p)) {
+		if (!pioche_vide(p)) {
+			if (emp >= 1) {
+				int nb_carte = 0;
+
+				retour = pioche_nb_carte(p, &nb_carte);
+
+				if (!retour) {
+					if (emp <= nb_carte) {
+						if (!carte_null(*c))
+							carte_detruire(c);
+
+						retour = pioche_get_sommet(p, c);
+
+						if (!retour) {
+							int i = 1;
+
+							for (i = 1; !retour && i < emp; i++)
+								retour = carte_get_prec(*c, c);
+
+							if (retour)
+								retour = 7; /* Problème récupération prec */
+						}
+						else
+							retour = 6; /* Problème récupération sommet */
+					}
+					else
+						retour = 5; /* L'empalcement voulu est plus grand que le nombre de carte dans la pioche */
+				}
+				else
+					retour = 4; /* Problème récupération nb carte dans la pioche */
+			}
+			else
+				retour = 3; /* L'emplacement recherché n'est pas un nombre positif */
+		}
+		else
+			retour = 2; /* Pioche vide, on ne peut donc pas récupérer la carte à l'emplacement donné */
+	}
+	else
+		retour = 1; /* Pioche NULL */
+
+	return retour;
+}
+
 int pioche_melanger(Pioche* p)
 {
 	int retour = 0;
 
 	if (!pioche_null(p)) {
 		if (!pioche_vide(p)) {
-			int i, nb_carte = 0, retour;
+			int nb_carte = 0;
 
 			retour = pioche_nb_carte(p, &nb_carte);
 
 			if (!retour) {
-				retour = pioche_get_sommet(p, &tmp); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+				/* tmp: carte en dessous de c
+				tmp2: carte en dessous de c_rnd
+				c: carte à l'emplacement nb_carte - i
+				c_rnd: carte à l'emplacement aléatoire entre 1 (sommet) et nb_carte - i - 1
+				c_prec: carte au dessus de c
+				c_rnd_prec: carte au dessus de c_rnd */
+				Carte* tmp = NULL, *tmp2 = NULL, *c = NULL, *c_rnd = NULL, *c_prec = NULL, *c_rnd_prec = NULL;
+				int i = 0, rnd = 0;
+				srand(time(NULL));
 
-				if (!retour) { /* Si on a bien récupéré le sommet*/
-					*nb_carte = 1;
-					int i = 0;
+				for (i = 0; !retour && i < nb_carte - 1; i++) {
 
-					for (i = 0; i < nb_carte; i++) { /* TODO récupérer la carte la plus en dessous (puis celle au dessus...) de la pile et l'échanger avec la random */
+					tmp = tmp2 = c = c_rnd = c_prec = c_rnd_prec = NULL;
 
-						while (!retour && tmp->prec != NULL) { /* Tant que la prochaine carte (prec) n'est pas NULL */
-/*fprintf(stderr, "Avant get_prec:\n");
-					carte_afficher(tmp);*/
-							retour = carte_get_prec(tmp, &tmp);
-/*fprintf(stderr, "Après get_prec:\n");
-					carte_afficher(tmp);*/
+					do {
+						rnd = (rand() % (nb_carte - i - 1)) + 1; /* On prend la carte random (rnd entre 1 et nb_carte - i - 1) */
+					} while (rnd == nb_carte - i); /* Normalement impossible */
 
-							if (!retour)
-								(*nb_carte)++;
+					retour = pioche_recup_carte_par_emplacement(p, nb_carte - i - 1, &c_prec); /* Récupération de la carte à l'emplacement nb_carte - i */
+
+					if (!retour) {
+						if (rnd > 1)
+							retour = pioche_recup_carte_par_emplacement(p, rnd - 1, &c_rnd_prec); /* Récupération de la carte à l'emplacement rnd - 1 */
+
+						if (!retour) {
+							retour = pioche_recup_carte_par_emplacement(p, nb_carte - i, &c); /* Récupération de la carte à l'emplacement nb_carte - i */
+
+							if (!retour) {
+								retour = pioche_recup_carte_par_emplacement(p, rnd, &c_rnd); /* Récupération de la carte à l'emplacement rnd */
+
+								if (!retour) {
+									retour = carte_get_prec(c, &tmp); /* Récupération de la carte en dessous de c */
+
+									if (!retour) {
+										retour = carte_get_prec(c_rnd, &tmp2); /* Récupération de la carte en dessous de rnd */
+
+										if (!retour) {
+											if (c != tmp2)
+												retour = carte_set_prec(c, tmp2); /* Changement de la carte suivante de c par celle de rnd */
+											else /* Cela veut dire que c_rnd est la carte au dessus de c */
+												retour = carte_set_prec(c, c_rnd);
+
+											if (!retour) {
+												retour = carte_set_prec(c_rnd, tmp); /* Changement de la carte suivante de rnd par l'ancienne de c */
+
+												if (!retour) {
+													if (!carte_null(c_rnd_prec))
+														retour = carte_set_prec(c_rnd_prec, c); /* Changement de la carte suivante de la précédente de rnd par c */
+													else /* Si c_rnd_prec est NULL, c'est que la carte rnd est le sommet de la pioche */
+														retour = pioche_set_sommet(p, c); /* On remplace le sommet de la pioche par la carte c */
+
+													if (!retour) {
+														if (c_rnd != c_prec) /* Si c_rnd n'est pas la carte au dessus de c (sinon, déjà fait au dessus) */
+															retour = carte_set_prec(c_prec, c_rnd); /* Changement de l'ancienne carte suivante de la précédente de c par rnd */
+													}
+													else
+														retour = 12;
+												}
+												else
+													retour = 11;
+											}
+											else
+												retour = 10;
+										}
+										else
+											retour = 9;
+									}
+									else
+										retour = 8;
+								}
+								else
+									 retour = 7;
+							}
 							else
-								retour = 5;
+								retour = 6;
 						}
-				}
-				else
-					retour = 4; /* Problème récupération sommet */
+						else
+							retour = 5;
+					}
+					else
+						retour = 4;
 
+/*fprintf(stderr, "\n\n===========Emplacements desartes échangées: %d & %d\n\n", nb_carte - i, rnd); */
 
+if (!retour)
+	fprintf(stderr, "mélange %d fait sans problème\n", i);
+else
+	fprintf(stderr, "mélange problème %d\n", retour);
 
-
-
-
-
-
-
-
-/*				for (i = 0; i < nb_carte - 1; i++) { Il faut commencer par la carte la plus en dessous du paquet (== c->prec == NULL)
-					int j = rand() % (NB_DECK_MAX - i)) + 1;
-					Pioche* t = pioche[j];
-					pioche[j] = pioche[i];
-					pioche[i] = t;
-				}*/
+/*pioche_afficher(p);*/
+				} /* Fin for */
 			}
 			else
 				retour = 3; /* Problème récupération nombre de carte */
 		}
 		else
-			retour = 2;
+			retour = 2; /* Pioche vide */
 	}
 	else
-		retour = 1;
+		retour = 1; /* Pioche NULL */
 
 	return retour;
 }
@@ -365,7 +464,7 @@ int pioche_remettre(Pioche* p, Carte* c) {
 				for (i = 0; i <= 3 && !retour; i++) /* On mélange X fois */
 					retour = pioche_melanger(p); /* Mélange de la pioche après avoir ajouté la carte */
 
-				if (i <= 3 && retour)
+				if (i <= 3 || retour)
 					retour = 4; /* Problème lors du mélange */
 			}
 			else
