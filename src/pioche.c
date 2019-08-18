@@ -7,7 +7,8 @@
 #include "../include/carte.h"
 
 void pioche_afficher(Pioche* p) {
-	printf("Affichage de la Pioche:\n");
+	if (DEBUG)
+		fprintf(stderr, "Affichage de la Pioche:\n");
 
 	Carte* c = NULL;
 	Carte* tmp = NULL;
@@ -26,20 +27,22 @@ void pioche_afficher(Pioche* p) {
 					carte_afficher(tmp);
 				}
 				else
-					printf("Problème pioche_depiler\n");
+					if (DEBUG)
+						fprintf(stderr, "Problème pioche_depiler\n");
 
 			} while (tmp->prec != NULL && !retour); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) */
 
 			pioche_set_sommet(p, c); /* On remet le sommet en place après avoir tout dépilé */
 		}
-		else {
-			printf("Sommet NULL\n");
-		}
+		else
+			if (DEBUG)
+				fprintf(stderr, "Sommet NULL\n");
 	}
 	else
-		printf("Problème récupération du sommet\n");
-
-	printf("Fin affichage Pioche\n");
+		if (DEBUG)
+			fprintf(stderr, "Problème récupération du sommet\n");
+	if (DEBUG)
+		fprintf(stderr, "Fin affichage Pioche\n");
 }
 
 int pioche_vide(Pioche* p) {
@@ -90,7 +93,8 @@ int pioche_limite_exemplaire(Pioche* p, Carte* c) {
 
 								if (!retour) {
 									if (compteur >= NB_EXEMPLAIRE_MAX) {
-										fprintf(stderr, "Nombre d'exemplaire maximum de %s dans le deck atteint.\n", ref);
+										if (DEBUG)
+											fprintf(stderr, "Nombre d'exemplaire maximum de %s dans le deck atteint.\n", ref);
 										retour = 8; /* Le nombre d'exemplaire maximum dans un deck pour cette carte a été atteint */
 									}
 								}
@@ -316,11 +320,12 @@ int pioche_melanger(Pioche* p)
 						retour = 4;
 
 /*fprintf(stderr, "\n\n===========Emplacements desartes échangées: %d & %d\n\n", nb_carte - i, rnd); */
-
-if (!retour)
-	fprintf(stderr, "mélange %d fait sans problème\n", i);
-else
-	fprintf(stderr, "mélange problème %d\n", retour);
+					if (DEBUG) {
+						if (!retour)
+							fprintf(stderr, "mélange %d fait sans problème\n", i);
+						else
+							fprintf(stderr, "mélange problème %d\n", retour);
+					}
 
 /*pioche_afficher(p);*/
 				} /* Fin for */
@@ -431,6 +436,9 @@ int pioche_enlever(Pioche* p, char* ref, Carte** c) {
 
 			} while (!retour && !trouve && tmp->prec != NULL); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) et qu'on n'a pas encore trouve la carte voulue*/
 
+			free(ref2);
+			ref2 = NULL;
+
 			if (trouve) { /* Si on a trouvé la carte; on l'enlève et on la mets dans le paramètre */
 				*c = tmp;
 				retour = carte_set_prec(prec, tmp->prec);
@@ -505,13 +513,16 @@ int pioche_detruire(Pioche** p) {
 
 		/* Si la pioche a bien été vidée */
 		if (pioche_vide(*p)) {
-			fprintf(stderr, "pioche vidée\n");
+			if (DEBUG)
+				fprintf(stderr, "pioche vidée\n");
 			free(*p);
 			*p = NULL;
 		}
 		else
 			retour = 2; /* La pioche n'a pas été vidée entièrement */
 	}
+	else
+		retour = 1; /* Pioche NULL */
 
 	return retour;
 }
@@ -528,49 +539,50 @@ int pioche_init(Pioche** p, char* file_name) {
 		if (!pioche_null((*p) = malloc(sizeof(**p)))) {
 			retour = pioche_set_sommet(*p, NULL);
 
-/*fprintf(stderr, "après sommet: %d\n", retour);*/
 			if (!retour) { /* Pas de problème lors de l'initialisation du sommet */
 				FILE* f;
 
-				fprintf(stderr, "nom fichier: %s.\n", file_name);
+				if (DEBUG)
+					fprintf(stderr, "nom fichier: %s.\n", file_name);
 
 				/* Si le fichier n'a pas de problème d'ouverture */
 				if ((f = fopen(file_name, "r")) != NULL) {
 					char* chaine = NULL;
 					chaine = malloc(sizeof(*chaine) * 100); /* Alloue 100 caractères pour la chaine */
-/*char* test_chaine = NULL;*/
+
 					int cnt = 0;
+					Carte* c = NULL;
+
 					while (!retour && fscanf(f, "%[^\n]\n", chaine) != EOF) { /* Tant qu'il y a une ligne à lire */
-						Carte* c = NULL;
+						c = NULL;
 
 						/* Crée une carte avec les valeurs de la ligne */
 						retour = carte_init(&c, chaine, "test_nom", "test_anime", 0, RIEN_UTILISATION, NULL, "test_chemin", NULL);
 
-/*fprintf(stderr, "affichage ref chaine: %s\n", chaine);
-fprintf(stderr, "affichage ref de c: %s\n", c->ref);
-
-carte_get_ref(c, &test_chaine);
-fprintf(stderr, "affichage ref get_ref: %s\n", test_chaine);*/
-
 						if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
-/*fprintf(stderr, "avant empiler\n");*/
 							retour = pioche_empiler(*p, c);
 
-							if (retour == 3) /* Si la carte ajoutée est déjà en 3 exemplaire, le code retour est 3. On laisse passé (non bloquant) */
+							if (retour == 3) { /* Si la carte ajoutée est déjà en 3 exemplaire, le code retour est 3. On laisse passé (non bloquant) */
 								retour = 0;
+								carte_detruire(&c); /* On détruit la carte qu'on vient de créer puisqu'elle ne sera plus accessible sinon (pas dans la pioche) */
+							}
 						}
 						else
-							fprintf(stderr, "Carte %d non créée.\n", cnt);
+							if (DEBUG)
+								fprintf(stderr, "Carte %d non créée.\n", cnt);
 
 						cnt++;
 					}
 
-					fprintf(stderr, "Nb cartes créées: %d\n", cnt);
+					if (DEBUG)
+						fprintf(stderr, "Nb cartes créées: %d\n", cnt);
 
 					free(chaine);
+					chaine = NULL;
 				}
 				else {
-					fprintf(stderr, "Le fichier %s n'a pas réussi à s'ouvrir.\n", file_name);
+					if (DEBUG)
+						fprintf(stderr, "Le fichier %s n'a pas réussi à s'ouvrir.\n", file_name);
 					retour = 1;
 				}
 
@@ -578,7 +590,6 @@ fprintf(stderr, "affichage ref get_ref: %s\n", test_chaine);*/
 
 			}
 
-/*fprintf(stderr, "après tout: %d\n", retour);*/
 			if (retour)
 				pioche_detruire(p);
 		}

@@ -2,21 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/carte.h"
+#include "../include/fonctions.h"
 
 void carte_afficher(Carte* carte) {
-	printf("Affichage d'une carte\n");
+	if (DEBUG)
+		fprintf(stderr, "Affichage d'une carte\n");
 
 	Carte* prec;
 
-	if (carte_null(carte))
+	if (carte_null(carte) && DEBUG)
 		fprintf(stderr, "carte null\n");
-
 	else if (!carte_get_prec(carte, &prec)) {
 		char* ref = NULL;
 		int check = carte_get_ref(carte, &ref);
 
 		if (!check) {
-			printf("Carte actuelle: %s\n", ref);
+			if (DEBUG)
+				fprintf(stderr, "Carte actuelle:");
+
+			printf("%s\n", ref);
 			free(ref);
 			ref = NULL;
 		}
@@ -25,20 +29,24 @@ void carte_afficher(Carte* carte) {
 			check = carte_get_ref(prec, &ref);
 
 			if (!check) {
-				printf("Carte précédente: %s\n", ref);
+				if (DEBUG)
+					fprintf(stderr, "Carte précédente: %s\n", ref);
 				free(ref);
 				ref = NULL;
 			}
 		}
 		else
-			fprintf(stderr, "La carte précédente est NULL\n");
+			if (DEBUG)
+				fprintf(stderr, "La carte précédente est NULL\n");
 
 /*		stat_afficher(carte->stat);*/
 	}
 	else
-		fprintf(stderr, "Affichage carte: Problème lors de la récupération de la carte précédente\n");
+		if (DEBUG)
+			fprintf(stderr, "Affichage carte: Problème lors de la récupération de la carte précédente\n");
 
-	printf("Fin affichage d'une carte\n");
+	if (DEBUG)
+		fprintf(stderr, "Fin affichage d'une carte\n");
 }
 
 /*struct carte {
@@ -58,18 +66,15 @@ int carte_get_ref(Carte* c, char** ref) {
 
 	if (!carte_null(c)) {
 		if (c->ref != NULL && strlen(c->ref) > 0) {
-/*fprintf(stderr, "Après if\n");*/
 			if ((*ref) != NULL)
 				free(*ref);
 
-/*fprintf(stderr, "Avant malloc: %s\n", c->ref);*/
 			(*ref) = malloc(sizeof(char) * (strlen(c->ref) + 1));
 
 			if ((*ref) != NULL)
 				strcpy(*ref, c->ref);
 			else
 				retour = 3;
-/*fprintf(stderr, "Après malloc: %s\n", *ref);*/
 		}
 		else
 			retour = 2;
@@ -321,7 +326,7 @@ int carte_get_chemin(Carte* c, char** chemin) {
 			(*chemin) = malloc(sizeof(char) * (strlen(c->chemin) + 1));
 
 			if ((*chemin) != NULL)
-				*chemin = c->chemin;
+				strcpy(*chemin, c->chemin);
 			else
 				retour = 3;
 		}
@@ -401,7 +406,6 @@ int carte_init(Carte** c, char* ref, char* nom_carte, char* nom_anime, int cout/
 
 		retour = carte_set_ref(*c, ref);
 
-
 		if (!retour) {
 			retour = carte_set_nom(*c, nom_carte);
 
@@ -420,17 +424,38 @@ int carte_init(Carte** c, char* ref, char* nom_carte, char* nom_anime, int cout/
 							if (!retour) {
 								retour = carte_set_chemin(*c, chemin);
 
-								if (!retour)
+								if (!retour) {
 									retour = carte_set_prec(*c, prec);
+
+									if (retour)
+										retour = 9; /* Problème set prec */
+								}
+								else
+									retour = 8; /* Problème set chemin */
 							}
+							else
+								retour = 7; /* Problème set stat */
 						}
+						else
+							retour = 6; /* Problème set utilisation */
 					}
+					else
+						retour = 5; /* Problème set cout */
 				}
+				else
+					retour = 4; /* Problème set nom anime */
 			}
+			else
+				retour = 3; /* Problème set nom */
 		}
+		else
+			retour = 2; /* Problème set ref */
 
 		if (retour)
 			carte_detruire(c);
 	}
+	else
+		retour = 1; /* Problème malloc */
+
 	return retour;
 }
