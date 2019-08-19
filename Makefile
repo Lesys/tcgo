@@ -32,7 +32,7 @@ DIRBUILD := build/
 
 #Noms des librairies statiques et dynamiques
 DIRLIB := lib/
-LINKNAME ?= heroes
+LINKNAME ?= tcgo
 libSTATIC := lib$(LINKNAME).a
 MAJEUR ?= .0
 MINEUR ?= .1
@@ -48,7 +48,7 @@ TESTOBJETS = test_carte.o test_pioche.o
 #test_joueur.o test_carre.o test_affichage.o test_gestion_tour.o test_gestion_partie.o test_affichage_sdl.o test_interactif_affichage_sdl.o test_sdl.o test_gestion_tour_sdl.o test_gestion_partie_sdl.o test_distant_client.o test_distant_server.o test_gestion_bot.o
 TESTFICHIERSC = $(TESTOBJETS:.o=.c)
 TESTEXEC = $(TESTOBJETS:%.o=%)
-#TESTSTATIC = test_blokus.static
+#TESTSTATIC = test_$(LINKNAME).static
 TESTlibSTATIC := test_lib$(LINKNAME).a
 TESTstaticLDLIBS := -l:$(TESTlibSTATIC)
 
@@ -114,8 +114,8 @@ $(STATIC): $(DIRMAIN)$(PROGRPRINC) $(libSTATIC)
 #MOVE: $(DYNAMIC) $(STATIC)
 MOVE: $(STATIC)
 	-mv *.a* *.so* ./$(DIRLIB)
-	-mv *($LINKNAME)* ./$(DIRBUILD)
-#	-mv *Heroes* ./$(DIRBUILD)
+	-mv *$(LINKNAME)* ./$(DIRBUILD)
+#	-mv *TCGO* ./$(DIRBUILD)
 	-mv $(DIRMAIN)*.o $(DIRLIB)*.o *.o ./$(DIROBJ)
 
 #Nettoie les fichiers créés dans le current directory

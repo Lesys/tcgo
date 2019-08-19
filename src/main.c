@@ -1,109 +1,113 @@
-// A ajouter à Zotero https://stackoverflow.com/questions/6127503/shuffle-array-in-c
+/*#include "../include/joueur.h"*/
+#include "../include/pioche.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-#include "../include/gestion_cartes.h"
-#include "../include/gestion_tableaux.h"
-#include "../include/variables.h"
-#include "../include/commun.h"
+#define NB_CHOIX 8
 
-// Le but de ce programme est de faire des tableaux avec des numéros, mélangés, et des listes différentes
-int main() {
-	srand(time(NULL));
+int main(int argc, char** argv) {
+	int choix = -1, retour = 0;
 
-	int fini = 0;
+	printf("====================\n\n\t\tDébut du jeu:\n\n");
 
-        // Création des tableaux
-        // Héros uniquement obtenables dans le HQ/QG
-	int* heros_communs = NULL;
+	Pioche* deck = NULL, *hand = NULL, *defausse = NULL;
 
-        // Héros obtenables dans les villes
-        int* heros_rare_force = NULL;
-        int* heros_rare_deter = NULL;
-        int* heros_rare_chari = NULL;
-        int* heros_epique_force = NULL;
-        int* heros_epique_deter = NULL;
-        int* heros_epique_chari = NULL;
+	retour = pioche_init(&hand, NULL);
 
-        // Cartes chance, piège et vilains
-        int* chances = NULL;
-        int* pieges = NULL;
-        int* vilains = NULL;
+	if (!retour) { /* Initialisation de la main et de la défausse (vides) */
+		retour = pioche_init(&defausse, NULL);
 
-	// Déclaration du tableau contenant les pioches et leur quantité
-	int* nb_cartes_pioches[NB_PIOCHE][2] = {{heros_communs, &NB_HEROS_COMMUNS}, {heros_rare_force, &NB_HEROS_RARES_FORCE}, {heros_rare_deter, &NB_HEROS_RARES_DETER}, {heros_rare_chari, &NB_HEROS_RARES_CHARI},
-		{heros_epique_force, &NB_HEROS_EPIQUES_FORCE}, {heros_epique_deter, &NB_HEROS_EPIQUES_DETER}, {heros_epique_chari, &NB_HEROS_EPIQUES_CHARI}, {chances, &NB_CHANCES}, {pieges, &NB_PIEGES}, {vilains, &NB_VILAINS}};
-
-
-	// Appelle du fichier permettant de remplir automatiquement le nombre de carte dans chaque pioche
-	lecture_fichier(nb_cartes_pioches, FILENAME);
-
-        int i = 0;
-
-	// Allocation des pioches
-	for (i = 0; i < NB_PIOCHE; i++) {
-		if ((nb_cartes_pioches[i][0] = malloc(sizeof(*(nb_cartes_pioches[i][0])) * *(nb_cartes_pioches[i][1]))) == NULL) {
-			printf("Allocation ratee pour la pioche %s\n\n", Pioches[i][0]);
-			exit(1);
-		}
+		if (retour && DEBUG)
+			fprintf(stderr, "Problème initialisation defausse NULL: %d\n", retour);
 	}
-	// Ajout des numéros aléatoires
-	remplissage_listes(nb_cartes_pioches);
+	else if (DEBUG)
+		fprintf(stderr, "Problème initialisation main NULL: %d\n", retour);
 
-//	afficher_tableau((nb_cartes_pioches[0][0]), *(nb_cartes_pioches[0][1]));
+	while (choix != 0) { /* Tant que l'utilisateur ne quitte pas */
+		choix = -1;
 
-	// Mélange tous les tableaux
-        for (i = 0; i < NB_PIOCHE; i++)
-                shuffle(nb_cartes_pioches[i][0], *(nb_cartes_pioches[i][1]));
+		printf("====================\n\nVotre main:\n");
+		pioche_afficher(hand);
+		printf("\n\n====================\n\n");
 
-	// Affiche les pioches et les numéros dans l'ordre
-        for (i = 0; i < NB_PIOCHE; i++)
-                afficher_tableau(nb_cartes_pioches[i][0], *(nb_cartes_pioches[i][1]));
+		printf("1°) Piocher\n2°) Ajouter une carte du deck à la main\n");
+		printf("3°) Envoyer une carte de la main à la défausse\n4°) Envoyer une carte du deck à la défausse\n");
+		printf("5°) Remettre une carte de la main au deck\n6°) Remettre une carte de la défausse au deck\n7°) Récupérer une carte de la défausse à la main\n");
+		printf("8°) Initialiser la pioche\n0°) Quitter\n\n");
+		printf("Votre choix: ");
 
-	// Boucle pour tirer les cartes
-	while (!fini) {
+                while ((choix < 1 || choix > NB_CHOIX) && (choix != 0)) { /* Tant qu'il ne fait pas un choix possible */
+                        if (choix != -1)
+                                printf("Veuillez choisir un choix entre 1 et %d (ou 0)\n", NB_CHOIX);
 
-		// Choix de l'utilisateur
+                        scanf("%d", &choix);
+                }
 
-		printf("Quel type de carte voulez-vous piocher?\n");
-
-		for (i = 0; i < NB_PIOCHE; i++)
-			printf("%s ) %s\n", Pioches[i][1], Pioches[i][0]);
-
-		int choix = -1;
-
-		printf("20 ) Piocher jusqu'a avoir un equipement\n");
-		printf("0 ) Arreter le programme\nVotre choix: ");
-
-		while ((choix < 1 || choix > NB_PIOCHE) && (choix != 0) && (choix != 20)) {
-			if (choix != -1)
-				printf("Veuillez choisir un choix entre 1 et %d\n", NB_PIOCHE);
-
-			scanf("%d", &choix);
-		}
-
-		if (choix) {
-			// Tire la carte de la pioche du joueur
-			int carte = tirer_carte(nb_cartes_pioches, choix);
+		if (choix != 8 && choix != 0 && pioche_null(deck)) /* Si le deck n'est pas initialisé et qu'on veut intéragir avec, on l'empêche */
+			printf("Veuillez initialiser le deck avant de faire cette action\n");
+		else {
+			Carte* c = NULL;
+			char* nom_fichier = NULL, *tmp = NULL;
 
 			switch (choix) {
-				case 20: choix = trouver_pioche("chances") + 1;
-//					choix = (int)Pioches[choix][1];
-					break;
-				default: break;
-			}
-			if (carte)
-				printf("\n-------------------\nVous avez tire la carte %d de la pioche %s\n-------------------\n\n", carte, Pioches[choix - 1][0]);
-			else
-				printf("\n-------------------\nIl n'y a plus de carte dans le paquet %s\n-------------------\n\n", Pioches[choix - 1][0]);
-		}
-		else
-			fini = 1;
+				case 1: retour = pioche_depiler(deck, &c);
 
+					if (!retour) {
+						retour = pioche_empiler(hand, c);
+
+						if (retour && DEBUG) {
+							fprintf(stderr, "Problème pioche_empiler dans main: %d\n", retour);
+							carte_detruire(&c);
+						}
+						else if (!retour) {
+							printf("Vous avez pioché la carte ");
+							carte_afficher(c);
+						}
+					}
+					else if (retour == 2)
+						printf("\nVous n'avez plus de carte dans votre deck\n");
+					else if (retour && DEBUG)
+						fprintf(stderr, "Problème pioche_depiler: %d\n", retour);
+
+					c = NULL;
+					break;
+
+				case 2:
+					break;
+
+				case 3:
+					break;
+
+				case 8:	nom_fichier = malloc(sizeof(char) * 100);
+					tmp = malloc(sizeof(char) * 100);
+					strcpy(nom_fichier, "../include/");
+
+					printf("Indiquez le nom du fichier à charger (doit se trouver dans le dossier 'include' du projet): ");
+					scanf("%s", tmp);
+
+					strcat(nom_fichier, tmp);
+					retour = pioche_init(&deck, nom_fichier);
+
+					if (pioche_null(deck) && DEBUG)
+						fprintf(stderr, "Pioche non initialisée\n");
+					else
+						fprintf(stderr, "Pioche initialisée\n");
+
+					free(nom_fichier);
+					free(tmp);
+					break;
+
+				case 0: break;
+
+				default: printf("Ce choix n'existe pas / n'est pas encore traité\n");
+					break;
+			}
+		}
 	}
 
-	// Libère toutes les pioches
-	for (i = 0; i < NB_PIOCHE; i++)
-		free(nb_cartes_pioches[i][0]);
-
+	pioche_detruire(&deck);
+	pioche_detruire(&hand);
+	pioche_detruire(&defausse);
 
 	return 0;
 }

@@ -540,54 +540,65 @@ int pioche_init(Pioche** p, char* file_name) {
 			retour = pioche_set_sommet(*p, NULL);
 
 			if (!retour) { /* Pas de problème lors de l'initialisation du sommet */
-				FILE* f;
+				if (file_name != NULL) {
+					FILE* f;
 
-				if (DEBUG)
-					fprintf(stderr, "nom fichier: %s.\n", file_name);
+					if (DEBUG)
+						fprintf(stderr, "nom fichier: %s.\n", file_name);
 
-				/* Si le fichier n'a pas de problème d'ouverture */
-				if ((f = fopen(file_name, "r")) != NULL) {
-					char* chaine = NULL;
-					chaine = malloc(sizeof(*chaine) * 100); /* Alloue 100 caractères pour la chaine */
+					/* Si le fichier n'a pas de problème d'ouverture */
+					if ((f = fopen(file_name, "r")) != NULL) {
+						char* chaine = NULL;
+						chaine = malloc(sizeof(*chaine) * 100); /* Alloue 100 caractères pour la chaine */
 
-					int cnt = 0;
-					Carte* c = NULL;
+						int cnt = 0;
+						Carte* c = NULL;
 
-					while (!retour && fscanf(f, "%[^\n]\n", chaine) != EOF) { /* Tant qu'il y a une ligne à lire */
-						c = NULL;
+						while (!retour && fscanf(f, "%[^\n]\n", chaine) != EOF) { /* Tant qu'il y a une ligne à lire */
+							c = NULL;
 
-						/* Crée une carte avec les valeurs de la ligne */
-						retour = carte_init(&c, chaine, "test_nom", "test_anime", 0, RIEN_UTILISATION, NULL, "test_chemin", NULL);
+							/* Crée une carte avec les valeurs de la ligne */
+							retour = carte_init(&c, chaine, "test_nom", "test_anime", 0, RIEN_UTILISATION, NULL, "test_chemin", NULL);
 
-						if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
-							retour = pioche_empiler(*p, c);
+							if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
+								retour = pioche_empiler(*p, c);
 
-							if (retour == 3) { /* Si la carte ajoutée est déjà en 3 exemplaire, le code retour est 3. On laisse passé (non bloquant) */
-								retour = 0;
-								carte_detruire(&c); /* On détruit la carte qu'on vient de créer puisqu'elle ne sera plus accessible sinon (pas dans la pioche) */
+								if (retour == 3) { /* Si la carte ajoutée est déjà en 3 exemplaire, le code retour est 3. On laisse passé (non bloquant) */
+									retour = 0;
+									carte_detruire(&c); /* On détruit la carte qu'on vient de créer puisqu'elle ne sera plus accessible sinon (pas dans la pioche) */
+								}
 							}
-						}
-						else
+							else
+								if (DEBUG)
+									fprintf(stderr, "Carte %d non créée.\n", cnt);
 							if (DEBUG)
-								fprintf(stderr, "Carte %d non créée.\n", cnt);
+								cnt++;
+						}
 
-						cnt++;
+						if (DEBUG)
+							fprintf(stderr, "Nb cartes créées: %d\n", cnt);
+
+						free(chaine);
+						chaine = NULL;
+
+						if (!retour) {
+							retour = pioche_melanger(*p);
+
+							if (retour)
+								retour = 2; /* Problème mélange */
+						}
+					}
+					else {
+						if (DEBUG)
+							fprintf(stderr, "Le fichier %s n'a pas réussi à s'ouvrir.\n", file_name);
+						retour = 1;
 					}
 
-					if (DEBUG)
-						fprintf(stderr, "Nb cartes créées: %d\n", cnt);
-
-					free(chaine);
-					chaine = NULL;
+					fclose(f);
 				}
-				else {
+				else
 					if (DEBUG)
-						fprintf(stderr, "Le fichier %s n'a pas réussi à s'ouvrir.\n", file_name);
-					retour = 1;
-				}
-
-				fclose(f);
-
+						fprintf(stderr, "Pas de nom de fichier, la pioche est créée avec un sommet NULL");
 			}
 
 			if (retour)
@@ -596,6 +607,7 @@ int pioche_init(Pioche** p, char* file_name) {
 		else /* Si le malloc n'a pas abouti */
 			retour = 1;
 	}
+
 
 	return retour;
 }
