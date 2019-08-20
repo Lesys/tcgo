@@ -226,6 +226,58 @@ int pioche_recup_carte_par_emplacement(Pioche* p, int emp, Carte** c) {
 	return retour;
 }
 
+int pioche_echanger_carte(Pioche* dest, Pioche* src) {
+	int retour = 0;
+
+	if (!pioche_null(dest)) {
+		if (!pioche_null(src)) {
+			if (!pioche_vide(src)) {
+				char* nom = malloc(sizeof(char) * (TAILLE_REF + 1));
+				Carte* c = NULL;
+
+				printf("\n=====\nCHANGEMENT DE PIOCHE\n=====\nParmi les cartes suivantes, quelle carte transférer?\n");
+				pioche_afficher(src);
+				putchar('\n');
+
+				do {
+					if (retour)
+						printf("\nLa référence saisie n'est pas présente dans la pioche. Veuillez saisir à nouveau: ");
+
+					scanf("%s", nom);
+
+				} while ((retour = pioche_enlever_par_ref(src, nom, &c)) == 3); /* Tant que la référence saisie n'est pas dans la pioche */
+
+				free(nom);
+
+				if (!retour) {
+					retour = pioche_empiler(dest, c);
+
+					if (retour && DEBUG) {
+						fprintf(stderr, "Problème pioche_empiler dans dest: %d\n", retour);
+						carte_detruire(&c);
+					}
+					else if (!retour) {
+						printf("Carte échangée: ");
+						carte_afficher(c);
+					}
+				}
+				else if (retour && DEBUG)
+					fprintf(stderr, "Problème pioche_enlever_par_ref dans src: %d\n", retour);
+			}
+			else {
+				printf("La pioche source est vide, impossible d'y prendre une carte\n");
+				retour = 3; /* Pioche src vide, impossible d'y prendre une carte */
+			}
+		}
+		else
+			retour = 2; /* src NULL */
+	}
+	else
+		retour = 1; /* dest NULL */
+
+	return retour;
+}
+
 int pioche_melanger(Pioche* p)
 {
 	int retour = 0;
@@ -406,7 +458,7 @@ int pioche_set_sommet(Pioche* p, Carte* sommet) {
 	return retour;
 }
 
-int pioche_enlever(Pioche* p, char* ref, Carte** c) {
+int pioche_enlever_par_ref(Pioche* p, char* ref, Carte** c) {
 	int retour = 0;
 
 	if (!pioche_null(p)) {
@@ -431,8 +483,8 @@ int pioche_enlever(Pioche* p, char* ref, Carte** c) {
 						if (strcmp(ref, ref2) == 0) /* Si la référence de la carte correspond à celle qu'on cherche à enlever */
 							trouve = 1;
 
-				} else
-					printf("Problème pioche_depiler\n");
+				} else if (DEBUG)
+					fprintf(stderr, "Problème pioche_depiler\n");
 
 			} while (!retour && !trouve && tmp->prec != NULL); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) et qu'on n'a pas encore trouve la carte voulue*/
 

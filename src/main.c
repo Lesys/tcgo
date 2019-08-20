@@ -72,7 +72,10 @@ int main(int argc, char** argv) {
 					c = NULL;
 					break;
 
-				case 2:
+				case 2: retour = pioche_echanger_carte(hand, deck);
+
+					if (retour && DEBUG)
+						fprintf(stderr, "Problème pioche_echanger_carte deck => hand\n");
 					break;
 
 				case 3:

@@ -9,6 +9,7 @@
 #define NB_EXEMPLAIRE_MAX 3 /* Le nombre d'exemplaire maximum d'une même carte dans un deck */
 #define NB_DECK_MAX 40 /* Nombre de cartes maximum pour former un deck */
 #define DEBUG 0
+#define TAILLE_REF 5
 
 // Déclarations des fonctions au préalable
 /*void afficher_tableau(int*, int);
