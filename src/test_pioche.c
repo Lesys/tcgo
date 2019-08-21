@@ -29,7 +29,7 @@ int main() {
 			fprintf(stderr, "Problème recup_carte: %d\n", retour);
 
 		Carte* c = NULL;
-		retour = pioche_enlever(p, "PD-120", &c);
+		retour = pioche_enlever_par_ref(p, "PD120", &c);
 
 		if (!retour) {
 			fprintf(stderr, "On a bien enlevé la carte\n");

@@ -11,11 +11,13 @@ typedef struct terrain Terrain;
 
 struct terrain {
 	Carte* heros; /** < Le héros que le joueur incarne pour la partie. Il représente ses points de vie. */
-	Carte*[NB_EMPLACEMENT_ZONE][NB_ZONE] zone; /** < Les zones d'attaque et de défense. [X][0] zone de défense, [X][1] zone d'attaque. */
-	Carte*[NB_SORT] sort; /** < Les sorts posés sur le terrain. */
+	Carte* zone[NB_EMPLACEMENT_ZONE][NB_ZONE]; /** < Les zones d'attaque et de défense. [X][0] zone de défense, [X][1] zone d'attaque. */
+	Carte* sort[NB_SORT];/** < Les sorts posés sur le terrain. */
 };
 
 void terrain_afficher(Terrain*);
+
+int terrain_null(Terrain*);
 
 int terrain_get_heros(Terrain*, Carte**);
 int terrain_set_heros(Terrain*, Carte*);
