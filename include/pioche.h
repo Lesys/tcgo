@@ -30,9 +30,9 @@ int pioche_nb_carte(Pioche*, int*);
 int pioche_remettre(Pioche*, Carte*);
 int pioche_enlever_par_ref(Pioche*, char*, Carte**); /* Pour enlever une carte, il faut "sauvegarder" la carte précédente de la pile pour pouvoir changer son "prec" */
 
-int pioche_init(Pioche**, char*);
 int pioche_detruire(Pioche**);
-
+int pioche_init(Pioche**, char*);
+int pioche_init_vide(Pioche**);
 
 
 #endif

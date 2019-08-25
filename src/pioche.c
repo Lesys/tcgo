@@ -664,3 +664,27 @@ int pioche_init(Pioche** p, char* file_name) {
 	return retour;
 }
 
+/* Initialisation d'une pioche vide (comme la main ou la défausse au début d'une partie) */
+int pioche_init_vide(Pioche** p) {
+	int retour = 0;
+
+	/* Détruit la pioche pour la refaire si elle n'est pas NULL */
+	if (!pioche_null(*p))
+		retour = pioche_detruire(p);
+
+	/* Si la destruction s'est bien passée (si elle a été faite) */
+	if (!retour) {
+		if (!pioche_null((*p) = malloc(sizeof(**p)))) {
+			retour = pioche_set_sommet(*p, NULL);
+
+			if (retour)
+				retour = 3;
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1; /* Pioche non NULL */
+
+	return retour;
+}

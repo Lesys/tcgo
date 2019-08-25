@@ -1,6 +1,9 @@
 #ifndef JOUEUR_H
 #define JOUEUR_H
 
+#include "pioche.h"
+#include "terrain.h"
+
 /**
 	\typedef Type_Joueur : Type du joueur (BOT, LOCAL ou DISTANT)
 */
@@ -17,40 +20,37 @@ typedef struct joueur Joueur;
 	\brief Structure d'un Joueur
 */
 struct joueur {
-	Carte* heros; /** < Toutes les cartes héros du joueur (représente la première carte de la liste) */
-	Carte* bonus; /** < Toutes les cartes bonus du joueur (représente la première carte de la liste) */
-	Carte* structure; /** < Toutes les structures du joueur (représente la première carte de la liste) */
+	Pioche* deck; /** < Tout le paquet de carte du joueur. */
+	Pioche* hand; /** < La main du joueur pendant le jeu. */
+	Pioche* defausse;
 
-	int nb_chance_max; /** < Le nombre de carte chance maximum que le joueur peut posséder (peut diminuer ou augmenter; commence à 3) */
-	int nb_struct_max; /** < Le nombre de carte de structure que le joueur peut posséder (+1 par personnage donnant une structure; commence à 0) */
-
+	Terrain* terrain; /** < Terrain du joueur. Regroupe son héros, ses cartes personnages en zone d'attaque et défense ainsi que ses cartes sorts. */
 	char* pseudo; /** < Pseudonyme du joueur */
-	Couleur couleur; /** < Couleur du joueur (Nécessaire?) */
-	int score; /** < Score du joueur (s'actualisé à chaque mort d'un vilain) */
 
 	Type_Joueur type; /** < Type du joueur (Local, distant ou bot) */
 	Joueur* suiv; /** < Joueur suivant le joueur actuel */
 	int sockfd; /** < Numéro de socket (uniquement pour les joueurs distants; 0 de base) */
 };
 
+
+int joueur_null(jJoueur*);
+
 /* Accesseurs et mutateurs */
-int joueur_get_heros(Joueur*, Carte**, int); /* Numéro de la carte désirée */
-int joueur_ajouter_heros(Joueur*, Carte*);
-int joueur_get_nb_heros(Joueur*, int*);
 
-int joueur_get_chance(Joueur*, Carte**, int);
-int joueur_ajouter_chance(Joueur*, Carte*);
-int joueur_get_nb_chance_max(Joueur*, int*);
+int joueur_get_deck(Joueur*, Pioche**);
+int joueur_set_deck(Joueur*, Pioche*);
 
-int joueur_get_structure(Joueur*, Carte**, int);
-int joueur_ajouter_structure(Joueur*, Carte*);
-int joueur_get_nb_structure_max(Joueur*, int*);
+int joueur_get_main(Joueur*, Pioche**);
+int joueur_set_main(Joueur*, Pioche*);
+
+int joueur_get_defausse(Joueur*, Pioche**);
+int joueur_set_defausse(Joueur*, Pioche*);
+
+int joueur_get_terrain(Joueur*, Terrain**);
+int joueur_set_terrain(Joueur*, Terrain*);
 
 int joueur_get_pseudo(Joueur*, char**);
 int joueur_set_pseudo(Joueur*, char*);
-
-int joueur_get_couleur(Joueur*, Couleur*);
-int joueur_set_couleur(Joueur*, Couleur);
 
 int joueur_get_score(Joueur*, int*);
 int joueur_set_score(Joueur*, int);
@@ -63,5 +63,17 @@ int joueur_set_suiv(Joueur*, Joueur*);
 
 int joueur_get_sockfd(Joueur*, int*);
 int joueur_set_sockfd(Joueur*, int);
+
+/* Permet d'envoyer une carte d'une pioche à une autre */
+int joueur_deck_vers_main(Joueur*);
+int joueur_deck_vers_defausse(Joueur*);
+int joueur_main_vers_deck(Joueur*);
+int joueur_main_vers_defausse(Joueur*);
+int joueur_defausse_vers_deck(Joueur*);
+int joueur_defausse_vers_main(Joueur*);
+
+int joueur_init(Joueur**);
+/*int joueur_detruire(Joueur**);*/
+int joueur_liste_detruire(Joueur**);
 
 #endif

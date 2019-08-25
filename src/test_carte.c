@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/carte.h"
-#include "../include/chara.h"
+#include "../include/stat.h"
 
 int main() {
+/*
 	Carte* cartes[4];
 	int i;
 
@@ -42,7 +43,7 @@ int main() {
 	for (i = 0; i < 4; i++)
 		if ((retour = carte_detruire(&cartes[i])) != 0)
 			printf("Erreur lors de la desstruction: %d\n", retour);
-
+*/
 	return 0;
 }
 
