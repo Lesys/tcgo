@@ -559,7 +559,7 @@ int pioche_detruire(Pioche** p) {
 */
 
 		/* Tant que la fonction ne retourne pas d'erreur */
-		while ((retour = pioche_depiler(*p, &c)) == 0 && !carte_null(c)) {
+		while (!pioche_vide(*p) && (retour = pioche_depiler(*p, &c)) == 0/* && !carte_null(c)*/) {
 			carte_detruire(&c);
 		}
 
@@ -575,6 +575,10 @@ int pioche_detruire(Pioche** p) {
 	}
 	else
 		retour = 1; /* Pioche NULL */
+
+
+	if (DEBUG && retour)
+		fprintf(stderr, "Erreur pioche_detruire: %d\n", retour);
 
 	return retour;
 }

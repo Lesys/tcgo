@@ -14,11 +14,92 @@
 
 #include "../include/joueur.h"
 
+/*
+	\fn void joueur_free(Joueur** j);
+	\brief Libère un joueur (et tous ses attributs)
+
+	\param j L'adresse du Joueur* qu'on souhaite libérer
+*/
+/*static void joueur_free(Joueur** j) {
+	if (!joueur_null(*j)) {
+		(*j)->suiv = NULL;
+
+		if ((*j)->pseudo != NULL)
+			free((*j)->pseudo);
+		(*j)->pseudo = NULL;
+
+		free(*j);
+		(*j) = NULL;
+	}
+}*/
+
+
+/*
+	\fn Joueur* joueur_detruire(Joueur** j);
+	\brief Détruit un Joueur
+
+	\param j L'adresse du Joueur* qu'on souhaite détruire
+	\return code erreur
+*/
+static int joueur_detruire(Joueur** j) {
+	int retour = 0;
+
+/*	Joueur* suiv = NULL;*/
+	if (!pioche_null((*j)->deck))
+		retour = pioche_detruire(&((*j)->deck));
+
+	if (!retour) {
+		if (!pioche_null((*j)->hand))
+			retour = pioche_detruire(&((*j)->hand));
+
+		if (!retour) {
+			if (!pioche_null((*j)->defausse))
+				retour = pioche_detruire(&((*j)->defausse));
+
+			if (!retour) {
+				if (!terrain_null((*j)->terrain))
+					retour = terrain_detruire(&((*j)->terrain));
+
+				if (!retour) {
+					if ((*j)->pseudo != NULL) {
+						fprintf(stderr, "Pseudi détruit: %s\n", (*j)->pseudo);
+						free((*j)->pseudo);
+					}
+
+					/*if ((*j)->suiv != *j)*/ /* S'il y a plus d'un joueur dans la boucle des joueurs */
+/*						suiv = (*j)->suiv;*/
+						/* Redéfini les joueurs suivants et précédents */
+/*						suiv->prec = (*j)->prec;
+						(*j)->prec->suiv = suiv;
+					}*/
+
+/*					joueur_free(*j);*/
+					free(*j);
+					*j = NULL;
+				}
+				else
+					retour = 4;
+			}
+			else
+				retour = 3;
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1;
+
+	if (DEBUG && retour)
+		fprintf(stderr, "Code erreur fin joueur_detruire: %d\n", retour);
+
+	return retour;
+}
+
 int joueur_get_deck(Joueur* j, Pioche** deck) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(*deck)
+		if (!pioche_null(*deck))
 			pioche_detruire(deck);
 
 		if (pioche_null(*deck))
@@ -36,8 +117,8 @@ int joueur_set_deck(Joueur* j, Pioche* deck) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(j->deck)
-			pioche_detruire(*(j->deck));
+		if (!pioche_null(j->deck))
+			pioche_detruire(&(j->deck));
 
 		if (pioche_null(j->deck))
 			j->deck = deck;
@@ -54,7 +135,7 @@ int joueur_get_main(Joueur* j, Pioche** hand) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(*hand)
+		if (!pioche_null(*hand))
 			pioche_detruire(hand);
 
 		if (pioche_null(*hand))
@@ -72,8 +153,8 @@ int joueur_set_main(Joueur* j, Pioche* hand) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(j->hand)
-			pioche_detruire(*(j->hand));
+		if (!pioche_null(j->hand))
+			pioche_detruire(&(j->hand));
 
 		if (pioche_null(j->hand))
 			j->hand = hand;
@@ -90,7 +171,7 @@ int joueur_get_defausse(Joueur* j, Pioche** defausse) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(*defausse)
+		if (!pioche_null(*defausse))
 			pioche_detruire(defausse);
 
 		if (pioche_null(*defausse))
@@ -108,8 +189,8 @@ int joueur_set_defausse(Joueur* j, Pioche* defausse) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(j->defausse)
-			pioche_detruire(*(j->defausse));
+		if (!pioche_null(j->defausse))
+			pioche_detruire(&(j->defausse));
 
 		if (pioche_null(j->defausse))
 			j->defausse = defausse;
@@ -126,7 +207,7 @@ int joueur_get_terrain(Joueur* j, Terrain** terrain) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(*terrain)
+		if (!terrain_null(*terrain))
 			terrain_detruire(terrain);
 
 		if (terrain_null(*terrain))
@@ -144,8 +225,8 @@ int joueur_set_terrain(Joueur* j, Terrain* terrain) {
 	int retour = 0;
 
 	if (!joueur_null(j)) {
-		if (!pipoche_null(j->terrain)
-			terrain_detruire(*(j->terrain));
+		if (!terrain_null(j->terrain))
+			terrain_detruire(&(j->terrain));
 
 		if (terrain_null(j->terrain))
 			j->terrain = terrain;
@@ -174,7 +255,7 @@ int joueur_get_pseudo(Joueur* j, char** pseudo) {
 			if ((*pseudo) != NULL)
 				free(*pseudo);
 
-			(*pseudo) = malloc(sizeof(char) * (strlen(j->pseudo) + 1);
+			(*pseudo) = malloc(sizeof(char) * (strlen(j->pseudo) + 1));
 
 			if ((*pseudo) != NULL)
 				strcpy(*pseudo, j->pseudo);
@@ -205,7 +286,7 @@ int joueur_set_pseudo(Joueur* j, char* pseudo) {
 			if ((j->pseudo) != NULL)
 				free(j->pseudo);
 
-			(j->pseudo) = malloc(sizeof(char) * (strlen(pseudo) + 1);
+			(j->pseudo) = malloc(sizeof(char) * (strlen(pseudo) + 1));
 
 			if ((j->pseudo) != NULL)
 				strcpy(j->pseudo, pseudo);
@@ -217,43 +298,6 @@ int joueur_set_pseudo(Joueur* j, char* pseudo) {
 	}
 	else
 		retour = 1;
-
-	return retour;
-}
-
-/* Récupère le score du joueur */
-/**
-	\fn int joueur_get_score(Joueur* j, int* score);
-	\brief Permet de récupérer le score d'un Joueur*
-
-	\param j Le Joueur* dont on veut récupérer le score
-	\return Le score du Joueur*
-*/
-int joueur_get_score(Joueur* j, int* score) {
-	int retour = 0;
-
-	if (!joueur_null(j))
-		*score = j->score;
-	else
-		retour = 1:
-
-	return retour;
-}
-
-/**
-	\fn int joueur_set_score(Joueur* j, int score);
-	\brief Permet de récupérer le score d'un Joueur*
-
-	\param j Le Joueur* dont on veut modifier le score
-	\return Le score du Joueur*
-*/
-int joueur_set_score(Joueur* j, int score) {
-	int retour = 0;
-
-	if (!joueur_null(j))
-		j->score = score;
-	else
-		retour = 1:
 
 	return retour;
 }
@@ -416,35 +460,49 @@ int verif_nb_joueur(int nb) {
 	\param nb_joueur Le nomber de joueur qu'on souhaite créer
 	\return Le premier Joueur* (les autres Joueur sont accessibles via joueur_get_suivant). NULL Si le nombre de joueur n'est pas correct.
 */
-Joueur* joueur_liste_creation(int nb_joueur, ...) {
+int joueur_liste_creation(int nb_joueur, Joueur** first) {
 
 	if (!verif_nb_joueur(nb_joueur)) {
 		printf("Le nombre de joueur ne correspond pas (%d au lieu d'être entre %d et %d)", nb_joueur, NB_JOUEUR_MIN, NB_JOUEUR_MAX);
-		return NULL;
+		return 1;
 	}
 
-	int i = 0;
-	Joueur* first, *tmp;
+	int i = 0, retour = 0;
+	Joueur* tmp = NULL, *tmp2 = NULL;
 
-	/* Création du premier joueur */
-	first = joueur_init(c);
-	first->suiv = first->prec = first;
-	tmp = first;
-	c++;
+	if (!joueur_null(*first))
+		joueur_detruire(first);
 
-	/* Le premier joueur est créé, il ne faut donc pas le créer de nouveau. On commence à 1 */
-	for (i = 1; i < nb_joueur; i++) {
-		tmp->suiv = joueur_init(c);
-		(tmp->suiv)->suiv = first;
-		(tmp->suiv)->prec = tmp;
+	if (joueur_null(*first)) {
+		/* Création du premier joueur */
+		retour = joueur_init(first);
 
-		tmp = tmp->suiv;
+		if (!retour) {
+			(*first)->suiv = *first;
+			tmp = *first;
+
+			/* Le premier joueur est créé, il ne faut donc pas le créer de nouveau. On commence à 1 */
+			for (i = 1; !retour && i < nb_joueur; i++) {
+				retour = joueur_init(&tmp2);
+
+				if (!retour) {
+					tmp->suiv = tmp2;
+					tmp2->suiv = *first;
+					tmp = tmp2;
+					tmp2 = NULL;
+				}
+			}
+
+			if (retour)
+				retour = 4; /* Problème initialisation dans la boucle */
+		}
+		else
+			retour = 3; /* Problème initialisation *first */
 	}
+	else
+		retour = 2; /* Joueur non NULL après destruction */
 
-	/* Attribue le 1er joueur en tant que suivant du dernier */
-	first->prec = tmp;
-
-	return first;
+	return retour;
 }
 
 /* Fonction permettant de réinitialiser la liste de Joueur pour permettre de refaire une manche avec les mêmes pseudos */
@@ -465,7 +523,7 @@ void joueur_liste_reinit(Joueur* j) {
 
 		j->liste_piece = piece_liste_creation();*/
 
-		j = joueur_suivant(j);
+		j = j->suiv;
 	} while (first != j);
 }
 
@@ -481,7 +539,7 @@ int joueur_init(Joueur** j) {
 	int retour = 0;
 
 	if (!joueur_null(*j))
-		joeuur_detruire(j);
+		joueur_detruire(j);
 
 	if (joueur_null(*j)) {
 		*j = malloc(sizeof(Joueur));
@@ -489,41 +547,39 @@ int joueur_init(Joueur** j) {
 		if (!joueur_null(*j)) {
 
 			/* Permet d'avoir 15 caractères pour le pseudo + le caractère de fin de chaine */
-			j->pseudo = malloc(sizeof(char) * (TAILLE_PSEUDO + 1));
-			j->pseudo[0] = '\0';
+			(*j)->pseudo = malloc(sizeof(char) * (TAILLE_PSEUDO + 1));
+			(*j)->pseudo[0] = '\0';
 
-			if (j->pseudo != NULL) {
-				printf("Joueur %s, veuillez indiquer votre pseudo: ", couleur_tostring(c));
-				scanf("%*[^\n]%*c", j->pseudo);
-				scanf("%15s", j->pseudo);
+			if ((*j)->pseudo != NULL) {
+				printf("Veuillez indiquer votre pseudo: ");
+/*				scanf("%*[^\n]%*c", (*j)->pseudo);*/
+				scanf("%15s", (*j)->pseudo);
 
 				while (getchar() != '\n');
 
 				/* Réalloue la bonne taille pour le pseudo */
-				j->pseudo = realloc(j->pseudo, sizeof(char) * (strlen(j->pseudo) + 1));
+				(*j)->pseudo = realloc((*j)->pseudo, sizeof(char) * (strlen((*j)->pseudo) + 1));
 
-				if (j->pseudo != NULL) {
-					j->deck = NULL;
+				if ((*j)->pseudo != NULL) {
+					(*j)->deck = NULL;
 
-					j->hand = NULL;
-					retour = pioche_init_vide(&(j->hand));
+					(*j)->hand = NULL;
+					retour = pioche_init_vide(&((*j)->hand));
 
 					if (!retour) {
-						j->defausse = NULL;
-						retour = pioche_init_vide(&(j->defausse));
+						(*j)->defausse = NULL;
+						retour = pioche_init_vide(&((*j)->defausse));
 
 						if (!retour) {
-							j->terrain = NULL;
-							retour = terrain_init(&(j->terrain));
+							(*j)->terrain = NULL;
+							retour = terrain_init(&((*j)->terrain));
 
 							if (!retour) {
-								j->type = LOCAL;
-								j->suiv = NULL;
-								j->prec = NULL;
+								(*j)->type = LOCAL;
+								(*j)->suiv = NULL;
 
-								j->abandon = 0;
-								j->score = 0;
-				        			j->sockfd = 0;
+								(*j)->abandon = 0;
+				        			(*j)->sockfd = 0;
 							}
 							else
 								retour = 7; /* Problème initialisation du terrain */
@@ -532,7 +588,7 @@ int joueur_init(Joueur** j) {
 							retour = 6; /* Problème initialisation de la défausse vide */
 					}
 					else
-						reour = 5; /* Problème initialisation de la main vide */
+						retour = 5; /* Problème initialisation de la main vide */
 				}
 				else
 					retour = 4; /* Problème realloc pseudo */
@@ -560,80 +616,6 @@ int joueur_null(Joueur* j) {
 	return (j == NULL);
 }
 
-/* Libère un Joueur */
-/**
-	\fn void joueur_free(Joueur** j);
-	\brief Libère un joueur (et tous ses attributs)
-
-	\param j L'adresse du Joueur* qu'on souhaite libérer
-*/
-void joueur_free(Joueur** j) {
-	if (!joueur_null(*j)) {
-		(*j)->suiv = NULL;
-		(*j)->prec = NULL;
-
-		if ((*j)->pseudo != NULL)
-			free((*j)->pseudo);
-		(*j)->pseudo = NULL;
-
-		liste_piece_detruire(&((*j)->liste_piece));
-
-		free(*j);
-		(*j) = NULL;
-	}
-}
-
-/*
-	\fn Joueur* joueur_detruire(Joueur** j);
-	\brief Détruit un Joueur
-
-	\param j L'adresse du Joueur* qu'on souhaite détruire
-	\return code erreur
-*/
-static int joueur_detruire(Joueur** j) {
-	int retour = 0;
-
-	Joueur* suiv = NULL;
-
-	retour = pioche_detruire(&((*j)->deck));
-
-	if (!retour) {
-		retour = pioche_detruire(&((*j)->hand));
-
-		if (!retour) {
-			retour = pioche_detruire(&((*j)->defausse));
-
-			if (!retour) {
-				retour = terrain_detruire(&((*j)->terrain));
-
-				if (!retour) {
-					free((*j)->pseudo);
-
-					if ((*j)->suiv != *j) /* S'il y a plus d'un joueur dans la boucle des joueurs */
-						suiv = (*j)->suiv;
-						/* Redéfini les joueurs suivants et précédents */
-						suiv->prec = (*j)->prec;
-						(*j)->prec->suiv = suiv;
-					}
-
-					joueur_free(*j);
-					*j = NULL;
-				}
-				else
-					retour = 4;
-			 )
-			else
-				retour ) 3;
-		}
-		else
-			retour = 2;
-	}
-	else
-		retour = 1;
-
-	return retour;
-}
-
 /* Détruit tous les joueurs */
 /**
 	\fn void joueur_liste_detruire(Joueur** j);
@@ -642,11 +624,12 @@ static int joueur_detruire(Joueur** j) {
 	\param j L'adresse du Joueur* qu'on souhaite détruire (détruit TOUS les Joueur)
 */
 int joueur_liste_detruire(Joueur** j) {
-	retour = 0;
+	int retour = 0, cmp = 0;
 	Joueur* tmp = NULL;
 
 	while (!retour && !joueur_null(*j)) {
-		retour = joueur_suivant(*j, &tmp);
+fprintf(stderr, "Cmp: %d\n", cmp++);
+		retour = joueur_get_suivant(*j, &tmp);
 
 		if (!retour) {
 			retour = joueur_detruire(j);

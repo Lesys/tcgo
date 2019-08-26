@@ -4,6 +4,10 @@
 #include "pioche.h"
 #include "terrain.h"
 
+#define NB_JOUEUR_MIN 1
+#define NB_JOUEUR_MAX 2
+#define TAILLE_PSEUDO 15
+
 /**
 	\typedef Type_Joueur : Type du joueur (BOT, LOCAL ou DISTANT)
 */
@@ -30,10 +34,12 @@ struct joueur {
 	Type_Joueur type; /** < Type du joueur (Local, distant ou bot) */
 	Joueur* suiv; /** < Joueur suivant le joueur actuel */
 	int sockfd; /** < Numéro de socket (uniquement pour les joueurs distants; 0 de base) */
+
+	int abandon;
 };
 
 
-int joueur_null(jJoueur*);
+int joueur_null(Joueur*);
 
 /* Accesseurs et mutateurs */
 
@@ -51,9 +57,6 @@ int joueur_set_terrain(Joueur*, Terrain*);
 
 int joueur_get_pseudo(Joueur*, char**);
 int joueur_set_pseudo(Joueur*, char*);
-
-int joueur_get_score(Joueur*, int*);
-int joueur_set_score(Joueur*, int);
 
 int joueur_get_type(Joueur*, Type_Joueur*);
 int joueur_set_type(Joueur*, Type_Joueur);
@@ -75,5 +78,6 @@ int joueur_defausse_vers_main(Joueur*);
 int joueur_init(Joueur**);
 /*int joueur_detruire(Joueur**);*/
 int joueur_liste_detruire(Joueur**);
+int joueur_liste_creation(int, Joueur**);
 
 #endif
