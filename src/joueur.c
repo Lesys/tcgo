@@ -44,9 +44,11 @@
 static int joueur_detruire(Joueur** j) {
 	int retour = 0;
 
-/*	Joueur* suiv = NULL;*/
-	if (!pioche_null((*j)->deck))
+	Joueur* suiv = NULL;
+	if (!pioche_null((*j)->deck)) {
+		fprintf(stderr, "Deck non null, pseudo: %s\n", (*j)->pseudo);
 		retour = pioche_detruire(&((*j)->deck));
+	}
 
 	if (!retour) {
 		if (!pioche_null((*j)->hand))
@@ -62,16 +64,16 @@ static int joueur_detruire(Joueur** j) {
 
 				if (!retour) {
 					if ((*j)->pseudo != NULL) {
-						fprintf(stderr, "Pseudi détruit: %s\n", (*j)->pseudo);
+						fprintf(stderr, "Pseudo détruit: %s\n", (*j)->pseudo);
 						free((*j)->pseudo);
 					}
 
-					/*if ((*j)->suiv != *j)*/ /* S'il y a plus d'un joueur dans la boucle des joueurs */
-/*						suiv = (*j)->suiv;*/
+					if ((*j)->suiv != *j) { /* S'il y a plus d'un joueur dans la boucle des joueurs */
+						suiv = (*j)->suiv;
 						/* Redéfini les joueurs suivants et précédents */
-/*						suiv->prec = (*j)->prec;
+						suiv->prec = (*j)->prec;
 						(*j)->prec->suiv = suiv;
-					}*/
+					}
 
 /*					joueur_free(*j);*/
 					free(*j);
@@ -424,6 +426,31 @@ int joueur_set_sockfd(Joueur* j, int sockfd) {
 	return retour;
 }
 
+int joueur_get_heros(Joueur* j, Carte** heros) {
+	int retour = 0;
+
+	if (!joueur_null(j)) {
+		if (!terrain_null(j->terrain)) {
+			if (!carte_null(*heros))
+				carte_detruire(heros);
+
+			if (carte_null(*heros)) {
+				retour = terrain_get_heros(j->terrain, heros);
+
+				if (retour)
+					retour = 4; /* Problème récupération héros dans terrain */
+			}
+			else
+				retour = 3; /* Problème destruction carte */
+		}
+		else
+			retour = 2; /* Terrain NULL */
+	}
+	else
+		retour = 1; /* Joueur NULL */
+
+	return retour;
+}
 
 /*Joueur* joueur_copier(Joueur* j) {
 	Joueur* j_copie = joueur_init(joueur_couleur(j));
@@ -479,6 +506,7 @@ int joueur_liste_creation(int nb_joueur, Joueur** first) {
 
 		if (!retour) {
 			(*first)->suiv = *first;
+			(*first)->prec = *first;
 			tmp = *first;
 
 			/* Le premier joueur est créé, il ne faut donc pas le créer de nouveau. On commence à 1 */
@@ -487,7 +515,10 @@ int joueur_liste_creation(int nb_joueur, Joueur** first) {
 
 				if (!retour) {
 					tmp->suiv = tmp2;
+					tmp2->prec = tmp;
 					tmp2->suiv = *first;
+					(*first)->prec = tmp2;
+
 					tmp = tmp2;
 					tmp2 = NULL;
 				}
@@ -576,7 +607,8 @@ int joueur_init(Joueur** j) {
 
 							if (!retour) {
 								(*j)->type = LOCAL;
-								(*j)->suiv = NULL;
+								(*j)->suiv = *j;
+								(*j)->prec = *j;
 
 								(*j)->abandon = 0;
 				        			(*j)->sockfd = 0;
@@ -632,17 +664,22 @@ fprintf(stderr, "Cmp: %d\n", cmp++);
 		retour = joueur_get_suivant(*j, &tmp);
 
 		if (!retour) {
+			if (*j == tmp)
+				tmp = NULL;
+
 			retour = joueur_detruire(j);
 
-			if (!retour)
+			if (!retour) {
 				*j = tmp;
+				tmp = NULL;
+			}
 			else
 				retour = 2;
 		}
 		else
 			retour = 1;
 	}
-
+fprintf(stderr, "fin while\n");
 	return retour;
 }
 

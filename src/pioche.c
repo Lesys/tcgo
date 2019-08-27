@@ -2,9 +2,39 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../include/fonctions.h"
 #include "../include/pioche.h"
-#include "../include/carte.h"
+
+static int recup_prochain_mot(char* chaine, int* pos, char** dest) {
+	int retour = 0, nb_malloc = 5, cnt = 1;
+
+	if (chaine != NULL && strlen(chaine) > 0) {
+		if (*dest != NULL)
+			free(*dest);
+
+		*dest = malloc(sizeof(char) * nb_malloc);
+
+		if (*dest != NULL) {
+			while (chaine[*pos] != DELIMITEUR_CHAINE) { /* Tant qu'on n'arrive pas à la fin du bout de chaine */
+				if (cnt >= nb_malloc) { /* Si la place mémoire est trop petite pour accueillir toute l'information, on l'augmente */
+					nb_malloc *= 2;
+					*dest = realloc(*dest, nb_malloc);
+				}
+
+				strcat(*dest, chaine[(*pos)++]); /* Copie du caractère à la fin de la chaine de destination */
+				cnt++;
+			}
+
+			(*pos)++; /* Augmente d'1 cran pour ne pas rester sur le délimiteur */
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1;
+
+	return retour;
+}
+
 
 void pioche_afficher(Pioche* p) {
 	if (DEBUG)
@@ -539,6 +569,10 @@ int pioche_remettre(Pioche* p, Carte* c) {
 	return retour;
 }
 
+int pioche_get_all_heros(Pioche** p) {
+	int retour = 0;
+}
+
 int pioche_detruire(Pioche** p) {
 	int retour = 0;
 
@@ -583,7 +617,7 @@ int pioche_detruire(Pioche** p) {
 	return retour;
 }
 
-int pioche_init(Pioche** p, char* file_name) {
+int pioche_init(Pioche** p, int nb_limite_carte, char* file_name) {
 	int retour = 0;
 
 	/* Détruit la pioche pour la refaire si elle n'est pas NULL */
@@ -604,31 +638,62 @@ int pioche_init(Pioche** p, char* file_name) {
 
 					/* Si le fichier n'a pas de problème d'ouverture */
 					if ((f = fopen(file_name, "r")) != NULL) {
-						char* chaine = NULL;
-						chaine = malloc(sizeof(*chaine) * 100); /* Alloue 100 caractères pour la chaine */
+						char* chaine = NULL, *ref = NULL, *type_carte = NULL, *nom = NULL, *nom_anime = NULL, *atk = NULL, *hp = NULL, *cout = NULL, *effet = NULL, *chemin = NULL;
+						chaine = malloc(sizeof(*chaine) * 300); /* Alloue 300 caractères pour la chaine */
 
-						int cnt = 0;
+						int cnt = 0, i = 0;
+
+						if (nb_limite_carte == 0)
+							cnt = -1;
+
 						Carte* c = NULL;
 
-						while (!retour && fscanf(f, "%[^\n]\n", chaine) != EOF) { /* Tant qu'il y a une ligne à lire */
-							c = NULL;
+						while (!retour && fscanf(f, "%[^\n]\n", chaine) != EOF && cnt < nb_limite_carte) { /* Tant qu'il y a une ligne à lire et qu'on n'a pas atteint la limite de carte de la pioche */
+							if (chaine[0] != '#') { /* Si ce n'est pas une ligne commentaire */
+								c = NULL;
 
-							/* Crée une carte avec les valeurs de la ligne */
-							retour = carte_init(&c, chaine, "test_nom", "test_anime", 0, RIEN_UTILISATION, NULL, "test_chemin", NULL);
+								recup_prochain_mot(chaine, &i, &ref);
+								recup_prochain_mot(chaine, &i, &type_carte);
+								recup_prochain_mot(chaine, &i, &nom);
+								recup_prochain_mot(chaine, &i, &nom_anime);
+								recup_prochain_mot(chaine, &i, &atk);
+								recup_prochain_mot(chaine, &i, &hp);
+								recup_prochain_mot(chaine, &i, &cout);
+								recup_prochain_mot(chaine, &i, &effet);
 
-							if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
-								retour = pioche_empiler(*p, c);
+								chemin = malloc(sizeof(char) * strlen(ref) + 5); /* L'extension .png et \0 */
+								strcpy(chemin, ref);
+								strcat(chemin, EXTENSION_CARTE);
 
-								if (retour == 3) { /* Si la carte ajoutée est déjà en 3 exemplaire, le code retour est 3. On laisse passé (non bloquant) */
-									retour = 0;
-									carte_detruire(&c); /* On détruit la carte qu'on vient de créer puisqu'elle ne sera plus accessible sinon (pas dans la pioche) */
+								/* Crée une carte avec les valeurs de la ligne */
+								/* TODO Créer une variable Stat qui prend l'atk et les hp */
+								retour = carte_init(&c, ref, nom, nom_anime, cout, RIEN_UTILISATION, NULL, chemin, NULL);
+
+								if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
+									retour = pioche_empiler(*p, c);
+
+									if (retour == 3) { /* Si la carte ajoutée est déjà en 3 exemplaire, le code retour est 3. On laisse passé (non bloquant) */
+										retour = 0;
+										carte_detruire(&c); /* On détruit la carte qu'on vient de créer puisqu'elle ne sera plus accessible sinon (pas dans la pioche) */
+									}
 								}
+								else
+									if (DEBUG)
+										fprintf(stderr, "Carte %d non créée.\n", cnt);
+
+								if (!retour && cnt >= 0)
+									cnt++;
 							}
-							else
-								if (DEBUG)
-									fprintf(stderr, "Carte %d non créée.\n", cnt);
-							if (DEBUG)
-								cnt++;
+
+							free(ref); ref = NULL;
+							free(type_carte); type_carte = NULL;
+							free(nom); nom = NULL;
+							free(nom_anime); nom_anime = NULL;
+							free(atk); atk = NULL;
+							free(hp); hp = NULL;
+							free(cout); cout = NULL;
+							free(effet); effet = NULL;
+							free(chemin); chemin = NULL;
 						}
 
 						if (DEBUG)

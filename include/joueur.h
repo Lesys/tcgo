@@ -33,6 +33,7 @@ struct joueur {
 
 	Type_Joueur type; /** < Type du joueur (Local, distant ou bot) */
 	Joueur* suiv; /** < Joueur suivant le joueur actuel */
+	Joueur* prec; /** < Joueur précédent le joueur actuel (uniquement pour la destruction) */
 	int sockfd; /** < Numéro de socket (uniquement pour les joueurs distants; 0 de base) */
 
 	int abandon;

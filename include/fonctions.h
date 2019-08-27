@@ -7,9 +7,13 @@
 #include <time.h>
 
 #define NB_EXEMPLAIRE_MAX 3 /* Le nombre d'exemplaire maximum d'une même carte dans un deck */
+#define NB_EXEMPLAIRE_SEMI_LIMITE 2 /* Nombre d'exemplaires autorisés pour les semi-limitées */
+#define NB_EXEMPLAIRE_LIMITE 1 /* Nobmre d'exemplaires autorisés pour les limitées */
+
 #define NB_DECK_MAX 40 /* Nombre de cartes maximum pour former un deck */
 #define DEBUG 1
 #define TAILLE_REF 5
+#define DELIMITEUR_CHAINE ';'
 
 // Déclarations des fonctions au préalable
 /*void afficher_tableau(int*, int);

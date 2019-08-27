@@ -1,0 +1,3 @@
+PD001;Héros;Aqours;Love Live!;X;35;X;Augmente CYaRon!, AZALEA et Guilty Kiss de 2/0 en zone d'attaque et BiBi, Printemps et Lily White de 0/1 en zone de défense.
+PD002;Héros;µ's;Love Live!;X;40;X;Augmente BiBi, Printemps et Lily White de 2/0 en zone d'attaque et CYaRon!, AZALEA et Guilty Kiss de 0/1 en zone de défense.
+PD003;Perso;CYaRon!;Love Live!;2;4;5;Vous pouvez annuler l'effet d'un sort en défaussant cette carte depuis le terrain. Cet effet n'est utilisable qu'une seule fois par tour.

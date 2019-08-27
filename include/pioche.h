@@ -1,6 +1,9 @@
 #ifndef PIOCHE_H
 #define PIOCHE_H
 
+#define EXTENSION_CARTE ".png"
+
+#include "fonctions.h"
 #include "carte.h"
 
 typedef struct pioche Pioche;
@@ -31,7 +34,7 @@ int pioche_remettre(Pioche*, Carte*);
 int pioche_enlever_par_ref(Pioche*, char*, Carte**); /* Pour enlever une carte, il faut "sauvegarder" la carte précédente de la pile pour pouvoir changer son "prec" */
 
 int pioche_detruire(Pioche**);
-int pioche_init(Pioche**, char*);
+int pioche_init(Pioche**, int, char*);
 int pioche_init_vide(Pioche**);
 
 
