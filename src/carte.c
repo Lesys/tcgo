@@ -12,27 +12,63 @@ void carte_afficher(Carte* carte) {
 
 	if (carte_null(carte) && DEBUG)
 		fprintf(stderr, "carte null\n");
-	else if (!carte_get_prec(carte, &prec)) {
-		char* ref = NULL;
-		int check = carte_get_ref(carte, &ref);
+	else { /*if (!carte_get_prec(carte, &prec)) {*/
+		char* chaine = NULL;
+		int check = carte_get_ref(carte, &chaine);
+
+		printf("\n\n");
 
 		if (!check) {
 			if (DEBUG)
-				fprintf(stderr, "Carte actuelle:");
+				fprintf(stderr, "Carte actuelle:\n\n");
 
-			printf("%s\n", ref);
-			free(ref);
-			ref = NULL;
+			printf("Référence: %s\n", chaine);
+			if (chaine != NULL)
+				free(chaine);
+			chaine = NULL;
+
 		}
 
-		if (!carte_null(prec)) {
-			check = carte_get_ref(prec, &ref);
+		check = carte_get_nom(carte, &chaine);
+
+		if (!check) {
+			printf("Nom: %s\n", chaine);
+			if (chaine != NULL)
+				free(chaine);
+			chaine = NULL;
+		}
+
+		check = carte_get_nom_anime(carte, &chaine);
+
+		if (!check) {
+			printf("Nom de l'animé: %s\n", chaine);
+			if (chaine != NULL)
+				free(chaine);
+			chaine = NULL;
+		}
+
+/*		check = carte_get_chemin(carte, &chaine);
+
+		if (!check) {
+			printf("CHemin de l'image: %s\n", chaine);
+			free(chaine);
+			chaine = NULL;
+		}
+*/
+		check = carte_get_prec(carte, &prec);
+
+		if (check && DEBUG)
+			fprintf(stderr, "Affichage carte: Problème lors de la récupération de la carte précédente\n");
+		else if (!carte_null(prec)) {
+			check = carte_get_ref(prec, &chaine);
 
 			if (!check) {
 				if (DEBUG)
-					fprintf(stderr, "Carte précédente: %s\n", ref);
-				free(ref);
-				ref = NULL;
+					fprintf(stderr, "Carte précédente: %s\n", chaine);
+
+				if (chaine != NULL)
+					free(chaine);
+				chaine = NULL;
 			}
 		}
 		else
@@ -41,9 +77,8 @@ void carte_afficher(Carte* carte) {
 
 /*		stat_afficher(carte->stat);*/
 	}
-	else
-		if (DEBUG)
-			fprintf(stderr, "Affichage carte: Problème lors de la récupération de la carte précédente\n");
+
+	putchar('\n');
 
 	if (DEBUG)
 		fprintf(stderr, "Fin affichage d'une carte\n");
@@ -165,7 +200,7 @@ int carte_get_nom_anime(Carte* c, char** nom_anime) {
 			if ((*nom_anime) != NULL)
 				free(*nom_anime);
 
-			(*nom_anime) = malloc(sizeof(char) * (strlen(c->nom_carte) + 1));
+			(*nom_anime) = malloc(sizeof(char) * (strlen(c->nom_anime) + 1));
 
 			if ((*nom_anime) != NULL)
 				strcpy(*nom_anime, c->nom_anime);

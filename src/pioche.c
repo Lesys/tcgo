@@ -8,23 +8,34 @@ static int recup_prochain_mot(char* chaine, int* pos, char** dest) {
 	int retour = 0, nb_malloc = 5, cnt = 1;
 
 	if (chaine != NULL && strlen(chaine) > 0) {
+/*fprintf(stderr, "Avant free dans recup: %s\n", *dest);*/
 		if (*dest != NULL)
 			free(*dest);
 
 		*dest = malloc(sizeof(char) * nb_malloc);
-
+/*fprintf(stderr, "Après malloc dans recup: %s\n", *dest);*/
 		if (*dest != NULL) {
-			while (chaine[*pos] != DELIMITEUR_CHAINE) { /* Tant qu'on n'arrive pas à la fin du bout de chaine */
+			(*dest)[0] = '\0';
+			while (chaine[*pos] != DELIMITEUR_CHAINE && chaine[*pos] != '\0') { /* Tant qu'on n'arrive pas à la fin du bout de chaine ou de ligne */
+/*fprintf(stderr, "Avant if n° %d\n", cnt);*/
 				if (cnt >= nb_malloc) { /* Si la place mémoire est trop petite pour accueillir toute l'information, on l'augmente */
 					nb_malloc *= 2;
 					*dest = realloc(*dest, nb_malloc);
 				}
+/*fprintf(stderr, "Après if n° %d\n", cnt);*/
 
-				strcat(*dest, chaine[(*pos)++]); /* Copie du caractère à la fin de la chaine de destination */
+				strncat(*dest, chaine + (*pos)++, 1); /* Copie du caractère à la fin de la chaine de destination */
 				cnt++;
+/*fprintf(stderr, "Après ajout: %s\n", *dest);*/
 			}
 
-			(*pos)++; /* Augmente d'1 cran pour ne pas rester sur le délimiteur */
+/*			strcat(*dest, "\0"); // Fait automatiquement */
+			*dest = realloc(*dest, strlen(*dest) + 1);
+/*fprintf(stderr, "Fin recup_prochain_mot: %s\n", *dest);*/
+
+
+/*			if (*pos != '\0')*/
+				(*pos)++; /* Augmente d'1 cran pour ne pas rester sur le délimiteur */
 		}
 		else
 			retour = 2;
@@ -282,8 +293,10 @@ int pioche_echanger_carte(Pioche* dest, Pioche* src) {
 				if (!retour) {
 					retour = pioche_empiler(dest, c);
 
-					if (retour && DEBUG) {
-						fprintf(stderr, "Problème pioche_empiler dans dest: %d\n", retour);
+					if (retour) {
+						if (DEBUG)
+							fprintf(stderr, "Problème pioche_empiler dans dest: %d\n", retour);
+
 						carte_detruire(&c);
 					}
 					else if (!retour) {
@@ -571,6 +584,8 @@ int pioche_remettre(Pioche* p, Carte* c) {
 
 int pioche_get_all_heros(Pioche** p) {
 	int retour = 0;
+
+	return retour;
 }
 
 int pioche_detruire(Pioche** p) {
@@ -649,8 +664,10 @@ int pioche_init(Pioche** p, int nb_limite_carte, char* file_name) {
 						Carte* c = NULL;
 
 						while (!retour && fscanf(f, "%[^\n]\n", chaine) != EOF && cnt < nb_limite_carte) { /* Tant qu'il y a une ligne à lire et qu'on n'a pas atteint la limite de carte de la pioche */
+/*fprintf(stderr, "chaine à traiter: %s\n", chaine);*/
 							if (chaine[0] != '#') { /* Si ce n'est pas une ligne commentaire */
 								c = NULL;
+								i = 0;
 
 								recup_prochain_mot(chaine, &i, &ref);
 								recup_prochain_mot(chaine, &i, &type_carte);
@@ -667,7 +684,7 @@ int pioche_init(Pioche** p, int nb_limite_carte, char* file_name) {
 
 								/* Crée une carte avec les valeurs de la ligne */
 								/* TODO Créer une variable Stat qui prend l'atk et les hp */
-								retour = carte_init(&c, ref, nom, nom_anime, cout, RIEN_UTILISATION, NULL, chemin, NULL);
+								retour = carte_init(&c, ref, nom, nom_anime, atoi(cout), RIEN_UTILISATION, NULL, chemin, NULL);
 
 								if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
 									retour = pioche_empiler(*p, c);
@@ -683,17 +700,17 @@ int pioche_init(Pioche** p, int nb_limite_carte, char* file_name) {
 
 								if (!retour && cnt >= 0)
 									cnt++;
-							}
 
-							free(ref); ref = NULL;
-							free(type_carte); type_carte = NULL;
-							free(nom); nom = NULL;
-							free(nom_anime); nom_anime = NULL;
-							free(atk); atk = NULL;
-							free(hp); hp = NULL;
-							free(cout); cout = NULL;
-							free(effet); effet = NULL;
-							free(chemin); chemin = NULL;
+								free(ref); ref = NULL;
+								free(type_carte); type_carte = NULL;
+								free(nom); nom = NULL;
+								free(nom_anime); nom_anime = NULL;
+								free(atk); atk = NULL;
+								free(hp); hp = NULL;
+								free(cout); cout = NULL;
+								free(effet); effet = NULL;
+								free(chemin); chemin = NULL;
+							}
 						}
 
 						if (DEBUG)

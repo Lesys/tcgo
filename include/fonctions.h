@@ -11,9 +11,11 @@
 #define NB_EXEMPLAIRE_LIMITE 1 /* Nobmre d'exemplaires autorisés pour les limitées */
 
 #define NB_DECK_MAX 40 /* Nombre de cartes maximum pour former un deck */
-#define DEBUG 1
 #define TAILLE_REF 5
 #define DELIMITEUR_CHAINE ';'
+
+
+#define DEBUG 0 /* Permet d'afficher les messages de débug (si != 0) */
 
 // Déclarations des fonctions au préalable
 /*void afficher_tableau(int*, int);

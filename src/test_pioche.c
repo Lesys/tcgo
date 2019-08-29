@@ -6,11 +6,11 @@
 
 int main() {
 
-	char* fichier = "../../include/liste.txt";
+	char* fichier = "../../include/cartes.txt";
 
 	Pioche* p = NULL;
 
-	int retour = pioche_init(&p, fichier);
+	int retour = pioche_init(&p, 0, fichier);
 
 	if (retour == 0) {
 		fprintf(stderr, "Retour 0 (depuis main).\n");
@@ -19,7 +19,7 @@ int main() {
 /*		int nb_carte;*/
 		Carte* c2 = NULL;
 
-		retour = pioche_recup_carte_par_emplacement(p, 18, &c2);
+		retour = pioche_recup_carte_par_emplacement(p, 35, &c2);
 
 		if (!retour) {
 			fprintf(stderr, "\n====Carte récupérée:\n");
@@ -29,7 +29,7 @@ int main() {
 			fprintf(stderr, "Problème recup_carte: %d\n", retour);
 
 		Carte* c = NULL;
-		retour = pioche_enlever_par_ref(p, "PD120", &c);
+		retour = pioche_enlever_par_ref(p, "PD117", &c);
 
 		if (!retour) {
 			fprintf(stderr, "On a bien enlevé la carte\n");

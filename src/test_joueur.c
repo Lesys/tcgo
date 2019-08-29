@@ -3,7 +3,7 @@
 #include "../include/joueur.h"
 
 int main() {
-	Joueur* j1 = NULL, *j2 = NULL;
+	Joueur* j1 = NULL;/*, *j2 = NULL;*/
 	int retour = 0;
 
 	retour = joueur_init(&j1);
