@@ -396,6 +396,26 @@ int carte_set_chemin(Carte* c, char* chemin) {
 	return retour;
 }
 
+int carte_copier(Carte* src, Carte** copie) {
+	int retour = 0;
+
+	if (!carte_null(src)) {
+		char* ref = src->ref, *nom_carte = src->nom_carte, *nom_anime = src->nom_anime, *chemin = src->chemin;
+		int cout = src->cout;
+		Utilisation utilisation = src->utilisation;
+		Stat* stat = src->stat;
+
+		retour = carte_init(copie, ref, nom_carte, nom_anime, cout, utilisation, stat, chemin, NULL);
+
+		if (retour)
+			retour = 2;
+	}
+	else
+		retour = 1;
+
+	return retour;
+}
+
 int carte_detruire(Carte** c) {
 	int retour = 0;
 

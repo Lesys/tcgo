@@ -10,8 +10,11 @@
 #define NB_EXEMPLAIRE_SEMI_LIMITE 2 /* Nombre d'exemplaires autorisés pour les semi-limitées */
 #define NB_EXEMPLAIRE_LIMITE 1 /* Nobmre d'exemplaires autorisés pour les limitées */
 
+#define LISTE_CARTES_EMPLACEMENT "../include/cartes.txt"
+
 #define NB_DECK_MAX 40 /* Nombre de cartes maximum pour former un deck */
 #define TAILLE_REF 5
+#define TAILLE_NOM_FICHIER 15
 #define DELIMITEUR_CHAINE ';'
 
 

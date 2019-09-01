@@ -87,6 +87,7 @@ int carte_get_chemin(Carte*, char**);
 int carte_set_chemin(Carte*, char*);
 /* Fin accesseurs / mutateurs */
 
+int carte_copier(Carte*, Carte**);
 int carte_detruire(Carte**);
 int carte_init(Carte**, char*, char*, char*, int /*, Effet */, Utilisation, Stat*, char*, Carte*);
 
