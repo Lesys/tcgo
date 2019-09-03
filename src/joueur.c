@@ -78,6 +78,8 @@ static int joueur_detruire(Joueur** j) {
 /*					joueur_free(*j);*/
 					free(*j);
 					*j = NULL;
+
+					*j = suiv;
 				}
 				else
 					retour = 4;
@@ -498,7 +500,7 @@ int joueur_liste_creation(int nb_joueur, Joueur** first) {
 	Joueur* tmp = NULL, *tmp2 = NULL;
 
 	if (!joueur_null(*first))
-		joueur_detruire(first);
+		joueur_liste_detruire(first);
 
 	if (joueur_null(*first)) {
 		/* Création du premier joueur */
@@ -511,6 +513,7 @@ int joueur_liste_creation(int nb_joueur, Joueur** first) {
 
 			/* Le premier joueur est créé, il ne faut donc pas le créer de nouveau. On commence à 1 */
 			for (i = 1; !retour && i < nb_joueur; i++) {
+				printf("Création joueur %d:\n", i);
 				retour = joueur_init(&tmp2);
 
 				if (!retour) {
@@ -661,7 +664,12 @@ int joueur_liste_detruire(Joueur** j) {
 
 	while (!retour && !joueur_null(*j)) {
 fprintf(stderr, "Cmp: %d\n", cmp++);
-		retour = joueur_get_suivant(*j, &tmp);
+
+		retour = joueur_detruire(j);
+
+		if (retour)
+			retour = 1;
+/*		retour = joueur_get_suivant(*j, &tmp);
 
 		if (!retour) {
 			if (*j == tmp)
@@ -677,9 +685,9 @@ fprintf(stderr, "Cmp: %d\n", cmp++);
 				retour = 2;
 		}
 		else
-			retour = 1;
+			retour = 1;*/
 	}
-fprintf(stderr, "fin while\n");
+fprintf(stderr, "fin while detruire\n");
 	return retour;
 }
 

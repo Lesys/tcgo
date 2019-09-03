@@ -5,12 +5,16 @@
 
 #include "fonctions.h"
 #include "carte.h"
+/*#include "stat.h"*/
+#include "joueur.h"
+
+typedef struct joueur Joueur;
 
 typedef struct pioche Pioche;
 
 struct pioche {
 	Carte* sommet; /** < Liste des cartes de la pioche (pile) */
-/*	int nb_carte;*/ /** < Le nombre  */
+/*	Carte* héros;*/ /** < Le héros du joueur (uniquement pour le deck) */
 };
 
 int pioche_get_sommet(Pioche*, Carte**);
@@ -32,6 +36,13 @@ int pioche_melanger(Pioche*);
 int pioche_nb_carte(Pioche*, int*);
 int pioche_remettre(Pioche*, Carte*);
 int pioche_enlever_par_ref(Pioche*, char*, Carte**); /* Pour enlever une carte, il faut "sauvegarder" la carte précédente de la pile pour pouvoir changer son "prec" */
+
+int pioche_choisir_heros(Joueur*);
+int pioche_ref_presente(Pioche*, char*);
+int pioche_sauvegarder(Pioche*);
+int pioche_charger(Pioche**);
+int pioche_recup_par_ref(Pioche*, char*, Carte**);
+int creer_deck(Pioche**);
 
 int pioche_detruire(Pioche**);
 int pioche_init(Pioche**, int, char*);

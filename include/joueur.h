@@ -8,6 +8,8 @@
 #define NB_JOUEUR_MAX 2
 #define TAILLE_PSEUDO 15
 
+typedef struct pioche Pioche;
+
 /**
 	\typedef Type_Joueur : Type du joueur (BOT, LOCAL ou DISTANT)
 */
@@ -62,8 +64,8 @@ int joueur_set_pseudo(Joueur*, char*);
 int joueur_get_type(Joueur*, Type_Joueur*);
 int joueur_set_type(Joueur*, Type_Joueur);
 
-int joueur_get_suiv(Joueur*, Joueur**);
-int joueur_set_suiv(Joueur*, Joueur*);
+int joueur_get_suivant(Joueur*, Joueur**);
+int joueur_set_suivant(Joueur*, Joueur*);
 
 int joueur_get_sockfd(Joueur*, int*);
 int joueur_set_sockfd(Joueur*, int);

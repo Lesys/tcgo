@@ -8,7 +8,7 @@ typedef struct combat {
 	int hp; /** < Points de vie du PERSONNAGE */
 } Combat;
 
-typedef union stat {
+typedef union statistique {
 	int hp; /** < Uniquement pour un HEROS */
 	Combat* combat;
 } Stat;

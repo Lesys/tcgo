@@ -1,11 +1,11 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
+#include "carte.h"
+
 #define NB_EMPLACEMENT_ZONE 3 /* Le nombre de cartes posables dans une zone d'attaque ou de défense */
 #define NB_ZONE 2 /* Le nombre de zone par joueur sur le terrain (pour l'instant, uniquement 2: zone d'attaque et zone de défense) */
 #define NB_SORT 2 /* Le nombre possible de sorts posés simultanéments sur le terrain */
-
-#include "carte.h"
 
 typedef struct terrain Terrain;
 

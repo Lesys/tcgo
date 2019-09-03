@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include "../include/pioche.h"
 
 static int recup_prochain_mot(char* chaine, int* pos, char** dest) {
@@ -515,6 +518,8 @@ int pioche_ref_presente(Pioche* p, char* ref) {
 		if (strcmp(ref, ref2) == 0) /* Si la référence est présente */
 			retour = 1;
 
+		free(ref2);
+		ref2 = NULL;
 	} while (!retour && !carte_null(tmp));
 
 	return retour;
@@ -670,7 +675,13 @@ int pioche_remettre(Pioche* p, Carte* c) {
 	return retour;
 }
 
-int pioche_get_all_heros(Pioche** p) {
+int pioche_afficher_all_heros(Pioche** p) {
+
+	fprintf(stderr, "On est dans afficher_all_héros\n");
+	return 0;
+}
+
+int pioche_choisir_heros(Joueur* p) {
 	int retour = 0;
 
 	return retour;
@@ -679,17 +690,22 @@ int pioche_get_all_heros(Pioche** p) {
 int pioche_sauvegarder(Pioche* p) {
 	int retour = 0;
 
+	struct stat st = {0};
+
 	if (!pioche_null(p)) {
 		if (!pioche_vide(p)) {
-			char* file_name = malloc(sizeof(char) * (TAILLE_NOM_FICHIER + strlen("../include/") + strlen(".txt") + 1));
+			char* file_name = malloc(sizeof(char) * (TAILLE_NOM_FICHIER + strlen(DOSSIER_SAVE_FICHIER) + strlen(EXTENSION_SAVE_FICHIER) + 1));
 			char* tmp = malloc(sizeof(char) * TAILLE_NOM_FICHIER);
 
 			printf("Comment voulez-vous appeler le deck: ");
 			scanf("%15s", tmp);
 
-			strcpy(file_name, "../include/");
+			strcpy(file_name, DOSSIER_SAVE_FICHIER);
 			strcat(file_name, tmp);
-			strcat(file_name, ".txt");
+			strcat(file_name, EXTENSION_SAVE_FICHIER);
+
+			if (stat(DOSSIER_SAVE_FICHIER, &st) == -1) /* Crée le dossier de sauvegarde s'il n'existe pas */
+				mkdir(DOSSIER_SAVE_FICHIER, 0700);
 
 			FILE* f = fopen(file_name, "w");
 
@@ -745,74 +761,79 @@ int pioche_sauvegarder(Pioche* p) {
 int pioche_charger(Pioche** p) {
 	int retour = 0;
 
-	if (!pioche_null(*p))
-		pioche_detruire(p);
+	struct stat st = {0};
 
-	if (pioche_null(*p)) {
-		retour = pioche_init_vide(p);
+	if (stat(DOSSIER_SAVE_FICHIER, &st) != -1) { /* Si le dossier de sauvegarde existe */
+		if (!pioche_null(*p))
+			pioche_detruire(p);
 
-		if (!retour) {
-			char* file_name = malloc(sizeof(char) * (TAILLE_NOM_FICHIER + strlen("../include/") + strlen(".txt") + 1));
-			char* tmp = malloc(sizeof(char) * TAILLE_NOM_FICHIER);
+		if (pioche_null(*p)) {
+			retour = pioche_init_vide(p);
 
-			printf("Saisissez le nom du deck que vous voulez charger: ");
-			scanf("%15s", tmp);
+			if (!retour) {
+				char* file_name = malloc(sizeof(char) * (TAILLE_NOM_FICHIER + strlen(DOSSIER_SAVE_FICHIER) + strlen(EXTENSION_SAVE_FICHIER) + 1));
+				char* tmp = malloc(sizeof(char) * TAILLE_NOM_FICHIER);
 
-			strcpy(file_name, "../include/");
-			strcat(file_name, tmp);
-			strcat(file_name, ".txt");
+				printf("Saisissez le nom du deck que vous voulez charger: ");
+				scanf("%15s", tmp);
 
-			FILE* f = fopen(file_name, "r");
+				strcpy(file_name, DOSSIER_SAVE_FICHIER);
+				strcat(file_name, tmp);
+				strcat(file_name, EXTENSION_SAVE_FICHIER);
 
-			if (f != NULL) { /* Si le fichier s'est bien créé */
-				free(file_name);
-				free(tmp);
+				FILE* f = fopen(file_name, "r");
 
-				Pioche* liste = NULL;
-				Carte* c = NULL, *c2 = NULL;
-				char* ref = malloc(sizeof(char) * (TAILLE_REF + 1));
+				if (f != NULL) { /* Si le fichier s'est bien créé */
+					free(file_name);
+					free(tmp);
 
-				retour = pioche_init(&liste, 0, LISTE_CARTES_EMPLACEMENT);
+					Pioche* liste = NULL;
+					Carte* c = NULL, *c2 = NULL;
+					char* ref = malloc(sizeof(char) * (TAILLE_REF + 1));
 
-				if (!retour) {
-					while (!retour && fscanf(f, "%s\n", ref) != EOF) { /* Tant qu'il y a une carte à sauvegarder */
-						if (pioche_ref_presente(liste, ref)) {
-							retour = pioche_recup_par_ref(liste, ref, &c); /* Récupération des données de la carte */
+					retour = pioche_init(&liste, 0, LISTE_CARTES_EMPLACEMENT);
 
-							if (!retour) {
-								retour = carte_copier(c, &c2); /* Copie de la carte */
+					if (!retour) {
+						while (!retour && fscanf(f, "%s\n", ref) != EOF) { /* Tant qu'il y a une carte à sauvegarder */
+							if (pioche_ref_presente(liste, ref)) {
+								retour = pioche_recup_par_ref(liste, ref, &c); /* Récupération des données de la carte */
 
-								if (!retour)
-									pioche_empiler(*p, c2); /* Ajout de la carte dans le deck */
+								if (!retour) {
+									retour = carte_copier(c, &c2); /* Copie de la carte */
+
+									if (!retour)
+										pioche_empiler(*p, c2); /* Ajout de la carte dans le deck */
+								}
+								else
+									retour = 7;
 							}
 							else
 								retour = 6;
-						}
-						else
-							retour = 5;
 
-						c = NULL;
-						c2 = NULL;
+							c = NULL;
+							c2 = NULL;
+						}
 					}
+					else
+						retour = 5;
+
+					pioche_detruire(&liste);
+					free(ref);
+					fclose(f);
 				}
 				else
-					retour = 4;
-
-				pioche_detruire(&liste);
-				free(ref);
-				fclose(f);
+					retour = 4; /* Problème création du fichier */
 			}
 			else
-				retour = 3; /* Problème création du fichier */
+				retour = 3;
 		}
 		else
 			retour = 2;
-
 	}
 	else
 		retour = 1;
 
-fprintf(stderr, "fin charger: %d\n", retour);
+/*fprintf(stderr, "fin charger: %d\n", retour);*/
 
 	return retour;
 }
@@ -927,6 +948,11 @@ int creer_deck(Pioche** p) {
 
 							if (rep == 'O' || rep == 'o')
 								retour = pioche_charger(p);
+
+							if (retour == 1) { /* Si le dossier n'est pas créé */
+								printf("Le dossier de sauvegarde n'existe pas (vous n'avez pas encore fait de sauvegarde de deck). Chargement impossible.\n");
+								retour = 0;
+							}
 							break;
 
 						case 0: do {
