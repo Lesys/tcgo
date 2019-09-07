@@ -18,7 +18,7 @@ VPATH = lib:build:bin:src:include
 #Options pour les lignes de code faites pour la confection des fichiers objets
 DIROBJ := bin/
 CFLAGS += -g -L./lib/SDL/lib -I./lib/SDL/include -lSDL2 -lSDL2_ttf -lSDL2_mixer -lSDL2_image -fPIC -Wall -std=c99
-OBJETS = carte.o pioche.o terrain.o joueur.o
+OBJETS = carte.o pioche.o terrain.o joueur.o gestion_partie.o
 #gestion_tour.o gestion_partie.o joueur.o carre.o affichage.o couleur.o piece.o sprite.o affichage_sdl.o sdl.o gestion_tour_sdl.o gestion_partie_sdl.o main_terminal.o main_sdl.o distant.o gestion_bot.o son.o sauvegarde.o
 FICHIERSC = $(OBJETS:.o=.c)
 
@@ -44,7 +44,7 @@ REALNAME := $(SONAME)$(MINEUR)$(CORRECTION)
 #Variables pour la confection des executables de test :
 TESTDIR := $(DIRBUILD)test/
 TESTDIRC := src/
-TESTOBJETS = test_carte.o test_pioche.o test_terrain.o test_joueur.o
+TESTOBJETS = test_carte.o test_pioche.o test_terrain.o test_joueur.o test_pioche2.o test_gestion_partie.o
 #test_joueur.o test_carre.o test_affichage.o test_gestion_tour.o test_gestion_partie.o test_affichage_sdl.o test_interactif_affichage_sdl.o test_sdl.o test_gestion_tour_sdl.o test_gestion_partie_sdl.o test_distant_client.o test_distant_server.o test_gestion_bot.o
 TESTFICHIERSC = $(TESTOBJETS:.o=.c)
 TESTEXEC = $(TESTOBJETS:%.o=%)
