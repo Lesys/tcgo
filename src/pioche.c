@@ -675,6 +675,58 @@ int pioche_remettre(Pioche* p, Carte* c) {
 	return retour;
 }
 
+int pioche_piocher_main_depart(Joueur* j) {
+	int retour = 0, i;
+	Pioche* main = NULL, *p = NULL;
+	Carte* c = NULL;
+
+	retour = joueur_get_deck(j, &p);
+
+	if (!retour) {
+		if (!pioche_vide(p)) {
+			retour = pioche_init_vide(&main);
+
+			if (!retour) {
+				for (i = 0; !retour && i < NB_CARTE_DEPART; i++) { /* Récupération des NB_CARTE_DEPART cartes en haut de la pioche pour les mettre dans la main du joueur */
+					retour = pioche_depiler(p, &c);
+					if (!retour) {
+						pioche_empiler(main, c);
+
+						if (retour)
+							retour = 5;
+					}
+					else
+						retour = 4;
+					c = NULL;
+				}
+
+				if (!retour) {
+					retour = joueur_set_main(j, main);
+
+					if (!retour) {
+/*						retour = pioche_melanger(p);
+
+						if (retour)
+							retour = 8;
+*/					}
+					else
+						retour = 7;
+				}
+				else
+					retour = 6;
+			}
+			else
+				retour = 3;
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1;
+//TODO
+	return retour;
+}
+
 int pioche_afficher_all_heros(Pioche** p) {
 
 	fprintf(stderr, "On est dans afficher_all_héros\n");
@@ -933,6 +985,11 @@ int creer_deck(Pioche** p) {
 							break;
 
 						case 3: retour = pioche_sauvegarder(*p);
+
+							if (retour) {
+								printf("Erreur lors de la sauvegarde, annulation de la sauvegarde\n");
+								retour = 0;
+							}
 							break;
 
 						case 4: do {
@@ -1089,13 +1146,16 @@ int pioche_init(Pioche** p, int nb_limite_carte, char* file_name) {
 								recup_prochain_mot(chaine, &i, &cout);
 								recup_prochain_mot(chaine, &i, &effet);
 
-								chemin = malloc(sizeof(char) * strlen(ref) + 5); /* L'extension .png et \0 */
+								chemin = malloc(sizeof(char) * strlen(ref) + 5); /* 5 pour l'extension .png et \0 */
 								strcpy(chemin, ref);
 								strcat(chemin, EXTENSION_CARTE);
 
+								Stat stat;
+								stat_init(&stat, *hp != NO_STAT? atoi(hp) : HP_NULL, *atk != NO_STAT? atoi(atk) : ATTAQUE_NULL);
+
 								/* Crée une carte avec les valeurs de la ligne */
 								/* TODO Créer une variable Stat qui prend l'atk et les hp */
-								retour = carte_init(&c, ref, nom, nom_anime, atoi(cout), RIEN_UTILISATION, NULL, chemin, NULL);
+								retour = carte_init(&c, ref, nom, nom_anime, *cout != NO_STAT? atoi(cout) : COUT_NULL, RIEN_UTILISATION, stat, chemin, NULL);
 
 								if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
 									retour = pioche_empiler(*p, c);

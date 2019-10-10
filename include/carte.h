@@ -15,7 +15,7 @@ typedef enum type_effet{RIEN_EFFET = 0, SOIN, DEGAT, BOOST, DETRUIRE/*, ... */} 
 typedef enum cible{ALLY_TO_ENNEMY = 0, ALLY_TO_ALLY} Cible;
 
 typedef union temp {
-	Stat* stat;
+	Stat stat;
 	int boost;
 	Carte* equip;
 } Temp;
@@ -38,7 +38,7 @@ struct carte {
 	int cout; /** < Coût en énergie (-1 si HEROS, ne peut pas être < à 0 si SORT ou PERSONNAGE) */
 	Effet effet; /** < Effet de la carte. */ /* TODO MAJ A FAIRE PAR RAPPORT A LA CONCEPTION */
 	Utilisation utilisation; /** < Moment de l'utilisation de l'effet. */
-	Stat* stat; /** < UNION: soit HP (HEROS) soit statistiques de la carte (PERSONNAGE) (NULL si un sort).*/
+	Stat stat; /** < Stoque les HP de la carte (-1 si pas de HP) ainsi que son attaque (-1 si pas d'attaque)*/
 	char* chemin; /** < Chemin de l'image de la carte */
 
 	Carte* prec; /** < Carte précédente (Carte appartient à une pile, donc la carte directement en dessous (NULL si cette carte est la dernière). */
@@ -80,8 +80,8 @@ int carte_set_effet(Carte*, Effet);
 int carte_get_utilisation(Carte*, Utilisation*);
 int carte_set_utilisation(Carte*, Utilisation);
 
-int carte_get_stat(Carte*, Stat**);
-int carte_set_stat(Carte*, Stat*);
+int carte_get_stat(Carte*, Stat*);
+int carte_set_stat(Carte*, Stat);
 
 int carte_get_chemin(Carte*, char**);
 int carte_set_chemin(Carte*, char*);
@@ -89,7 +89,7 @@ int carte_set_chemin(Carte*, char*);
 
 int carte_copier(Carte*, Carte**);
 int carte_detruire(Carte**);
-int carte_init(Carte**, char*, char*, char*, int /*, Effet */, Utilisation, Stat*, char*, Carte*);
+int carte_init(Carte**, char*, char*, char*, int /*, Effet */, Utilisation, Stat, char*, Carte*);
 
 
 #endif

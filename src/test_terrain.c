@@ -13,8 +13,11 @@ int main() {
 		terrain_afficher(t);
 
 		Carte* c = NULL;
+		Stat stat;
+		stat.hp = 30;
+		stat.attaque = -1;
 
-		retour = carte_init(&c, "PD001", "test_nom", "test_anime", 0, RIEN_UTILISATION, NULL, "test_chemin", NULL);
+		retour = carte_init(&c, "PD001", "test_nom", "test_anime", 0, RIEN_UTILISATION, stat, "test_chemin", NULL);
 
 		if (!retour) {
 			fprintf(stderr, "\n====Carte créée:\n");
@@ -31,7 +34,10 @@ int main() {
 			fprintf(stderr, "\n\n");
 
 			c = NULL;
-			retour = carte_init(&c, "PD118", "test_nom", "test_anime", 0, RIEN_UTILISATION, NULL, "test_chemin", NULL);
+			stat.hp = -1;
+			stat.attaque = -1;
+
+			retour = carte_init(&c, "PD118", "test_nom", "test_anime", 0, RIEN_UTILISATION, stat, "test_chemin", NULL);
 
 			retour = terrain_poser_perso(t, c);
 			if (!retour) {

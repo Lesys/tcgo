@@ -8,6 +8,8 @@
 /*#include "stat.h"*/
 #include "joueur.h"
 
+#define NB_CARTE_DEPART 5
+
 typedef struct joueur Joueur;
 
 typedef struct pioche Pioche;
@@ -37,6 +39,7 @@ int pioche_nb_carte(Pioche*, int*);
 int pioche_remettre(Pioche*, Carte*);
 int pioche_enlever_par_ref(Pioche*, char*, Carte**); /* Pour enlever une carte, il faut "sauvegarder" la carte précédente de la pile pour pouvoir changer son "prec" */
 
+int pioche_piocher_main_depart(Joueur*); /* Permet d'initialiser la main du joueur avec le nombre de carte à piocher au début du jeu */
 int pioche_choisir_heros(Joueur*);
 int pioche_ref_presente(Pioche*, char*);
 int pioche_sauvegarder(Pioche*);

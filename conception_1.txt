@@ -6,7 +6,7 @@ TCGO:
 			- 7 cartes dans la main
 			- 1 collection de personnage (Carte)
 			- 1 collection de sort (Carte)
-		- Nom
+		- Nom DONE
 		- Numéro?
 		- Héros (Carte)
 		- sockfd
@@ -15,11 +15,20 @@ TCGO:
 	Cartes
 		Structure de base à faire hériter
 
-			- Référence (alphanumeric, ex: PD-001)
+			- Référence (alphanumeric, ex: PD001) DONE
 			- Nom DONE
-			- Utilisation DONE
+			- Utilisation
 			- Coût (int)
 			- Stats (Union)
+				- Heros
+					- HP
+				- Perso
+					- HP
+					- Attaque
+
+				- Sort
+					- HP (terrain de Magi)
+
 				- HP (uniquement le héros / int)
 				- Combat (structure)
 					- Attaque (int)
@@ -45,13 +54,15 @@ TCGO:
 		- Carte* sommet
 		- Type_Carte
 
-	Plateau de jeu
-		- Case[4][4]
-		- nb_tour
+	Terrain DONE
+		- Carte* heros (transferer au joueur?) TODO?
+		- Carte* zone[][] (cartes en attaque et en défense)
+		- Carte* sort[] (cartes sorts)
 
-	Case
-		- Type_Case
-		- Joueur*
+/*	Plateau de jeu
+		- Case[4][4]
+		- nb_tour */
+
 /* ================
 	int gestion_tour(Joueur*, Plateau*) /* Fait lancer le dé, déplace le joueur, active la case sur laquelle il est tombé (s'il a fait un double réitère le processus précédent).
 		int lancer_des(int nb_des, int* score, int* double); /* retourne le score total des 2 dés et s'il a fait un double ou non */

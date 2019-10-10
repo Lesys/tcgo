@@ -8,13 +8,15 @@ void carte_afficher(Carte* carte) {
 	if (DEBUG)
 		fprintf(stderr, "Affichage d'une carte\n");
 
-	Carte* prec;
+	Carte* prec = NULL;
 
 	if (carte_null(carte) && DEBUG)
 		fprintf(stderr, "carte null\n");
 	else { /*if (!carte_get_prec(carte, &prec)) {*/
 		char* chaine = NULL;
 		int check = carte_get_ref(carte, &chaine);
+		int cout;
+		Stat stat;
 
 		printf("\n\n");
 
@@ -46,6 +48,22 @@ void carte_afficher(Carte* carte) {
 				free(chaine);
 			chaine = NULL;
 		}
+
+		check = carte_get_cout(carte, &cout);
+
+		if (!check) {
+			printf("Cout: ");
+			if (cout != -1)
+				printf("%d\n", cout);
+			else
+				printf("Aucun\n");
+		}
+
+		check = carte_get_stat(carte, &stat);
+
+		if (!check)
+			stat_afficher(stat);
+
 
 /*		check = carte_get_chemin(carte, &chaine);
 
@@ -328,22 +346,30 @@ int carte_set_utilisation(Carte* c, Utilisation u) {
 	return retour;
 }
 
-int carte_get_stat(Carte* c, Stat** ch) {
+int carte_get_stat(Carte* c, Stat* ch) {
 	int retour = 0;
 
-	if (!carte_null(c))
-		*ch = c->stat;
+	if (!carte_null(c)) {
+		retour = stat_copie(ch, c->stat);
+
+		if (retour)
+			retour = 2;
+	}
 	else
 		retour = 1;
 
 	return retour;
 }
 
-int carte_set_stat(Carte* c, Stat* ch) {
+int carte_set_stat(Carte* c, Stat ch) {
 	int retour = 0;
 
-	if (!carte_null(c))
-		c->stat = ch;
+	if (!carte_null(c)) {
+		retour = stat_copie(&(c->stat), ch);
+
+		if (retour)
+			retour = 2;
+	}
 	else
 		retour = 1;
 
@@ -403,7 +429,7 @@ int carte_copier(Carte* src, Carte** copie) {
 		char* ref = src->ref, *nom_carte = src->nom_carte, *nom_anime = src->nom_anime, *chemin = src->chemin;
 		int cout = src->cout;
 		Utilisation utilisation = src->utilisation;
-		Stat* stat = src->stat;
+		Stat stat = src->stat;
 
 		retour = carte_init(copie, ref, nom_carte, nom_anime, cout, utilisation, stat, chemin, NULL);
 
@@ -432,9 +458,6 @@ int carte_detruire(Carte** c) {
 		if ((*c)->chemin != NULL)
 			free((*c)->chemin);
 
-/*		if ((*c)->stat != NULL)
-			stat_detruire(&((*c)->stat));
-*/
 		free(*c);
 		*c = NULL;
 	}
@@ -444,7 +467,7 @@ int carte_detruire(Carte** c) {
 	return retour;
 }
 
-int carte_init(Carte** c, char* ref, char* nom_carte, char* nom_anime, int cout/*, Effet effet*/, Utilisation utilisation, Stat* stat, char* chemin, Carte* prec) {
+int carte_init(Carte** c, char* ref, char* nom_carte, char* nom_anime, int cout/*, Effet effet*/, Utilisation utilisation, Stat stat, char* chemin, Carte* prec) {
 	int retour = 0;
 
 	if (!carte_null(*c))
@@ -455,7 +478,7 @@ int carte_init(Carte** c, char* ref, char* nom_carte, char* nom_anime, int cout/
 		(*c)->nom_anime = NULL;
 		(*c)->nom_carte = NULL;
 		(*c)->chemin = NULL;
-		(*c)->stat = NULL;
+/*		(*c)->stat = NULL;*/
 		(*c)->prec = NULL;
 		(*c)->suiv = NULL;
 

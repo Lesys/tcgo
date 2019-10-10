@@ -1,0 +1,162 @@
+PD001;Héros;Aqours;Love Live Series;X;35;X;Augmente CYaRon!, AZALEA et Guilty Kiss de 2/0 en zone d'attaque et BiBi, Printemps et Lily White de 0/1 en zone de défense.
+PD002;Héros;µ's;Love Live Series;X;40;X;Augmente BiBi, Printemps et Lily White de 2/0 en zone d'attaque et CYaRon!, AZALEA et Guilty Kiss de 0/1 en zone de défense.
+PD003;Perso;CYaRon!;Love Live Series;2;4;5;Vous pouvez annuler l'effet d'un sort en défaussant cette carte depuis le terrain. Cet effet n'est utilisable qu'une seule fois par tour.
+PD004;Perso;BiBi;Love Live Series;1;2;3;Gagne 2/2 si "Printemps" est dans la même zone que cette carte.
+PD005;Perso;Guilty Kiss;Love Live Series;2;4;6;Vous pouvez annuler l'effet d'un personnage en défaussant cette carte depuis le terrain. Cet effet n'est utilisable qu'une seule fois par tour.
+PD006;Perso;Printemps;Love Live Series;0;2;1;Gagne 3/0 si "Lily White" est dans la même zone que cette carte.
+PD007;Perso;AZALEA;Love Live Series;2;2;3;Lorsque cette carte est posée, vous pouvez récupérer un sort d'un animé musical depuis votre défausse à votre main.
+PD008;Perso;Lily White;Love Live Series;1;1;2;Gagne 0/3 si "BiBi" est dans la même zone que cette carte.
+PD009;Sort;Encore;Love Live Series;X;X;2;Ciblez un personnage dans votre défausse et provenant d'un animé musical, ajoutez-le à votre main.
+PD010;Sort;Recrutement;Love Live Series;X;X;3;Ciblez un personnage dans votre deck et provenant d'un animé musical, ajoutez-le à votre main.
+PD011;Héros;Tateyama Ayano;Mekaku City Actors;X;40;X;Une fois seulement, ciblez 3 sorts dans votre défausse et ajoutez-les à votre deck. Mélangez-le puis piochez une carte.
+PD012;Perso;Kuroha;Mekaku City Actors;7;7;9;Cette carte ne peut être posée qu'en défaussant un "Konoha" depuis votre terrain.
+PD013;Perso;Enomoto Takane;Mekaku City Actors;2;3;5;Lorsque cette carte est envoyée dans la défausse, vous pouvez ajouter une "Ene" depuis votre deck à votre main
+PD014;Perso;Kano Shuuya;Mekaku City Actors;1;2;3;Une fois seulement, annulez l'effet d'une carte sort de votre adversaire et changez-le en "piochez une carte".
+PD015;Perso;Kisaragi Momo;Mekaku City Actors;2;5;6;Cette carte doit être ciblée par toutes les attaques adverses.
+PD016;Perso;Kisaragi Shintarou;Mekaku City Actors;1;1;1;Gagne 1/1 pour chaque "Kisaragi Shintarou" dans votre défausse.
+PD017;Perso;Konoha;Mekaku City Actors;5;5;7;Si vous possédez "Kozakura Marry" sur votre terrain, vous pouvez ajouter un "Kuroha" depuis votre deck à votre main.
+PD018;Perso;Kozakura Marry;Mekaku City Actors;4;5;6;Si "Kuroha" est sur votre terrain, celui-ci gagne 2/0 tant que cette carte est sur votre terrain.
+PD019;Sort;Kido Tsubomi;Mekaku City Actors;X;X;3;Si un de vos personnages est ciblé par l'effe d'un personnage adversaire, vous pouvez défausser cette carte depuis votre main pour en annuler l'effet.
+PD020;Sort;Ene;Mekaku City Actors;X;X;2;Votre adversaire doit aléatoirement défausser une carte depuis sa main. Vous ne pouvez activer l'effet de "Ene" qu'une seule fois par tour.
+PD021;Sort;Locking Eyes;Mekaku City Actors;X;X;3;Ciblez un personnage adverse, il ne pourra pas déclarer d'attaque durant le prochain tour.
+PD022;Héros;Kotomine Kirei;Fate Series;X;40;X;Les servants dans votre main coûtent 2 énergies en moins si leur master est sur votre terrain.. Si un master quitte votre terrain, détruisez son servant associé.
+PD023;Perso;Saber;Fate Series;4;5;7;Lorsque cette carte attaque, vous pouvez payer le coût en énergie de celle-ci pour doubler ses dégâts.
+PD024;Perso;Emiya Kiritsugu;Fate Series;5;5;5;Lorsque cette carte est posée, vous pouvez poser un "Saber" sur votre terrain directement depuis votre main ou deck. Cette carte en devient le master.
+PD025;Perso;Gilgamesh;Fate Series;6;7;8;Une fois par tour, au lieu d'attaquer avec cette carte, infligez un point de dégât à tous les personnages adverses.
+PD026;Perso;Tousaka Rin;Fate Series;2;2;3;Lorsque cette carte est posée, vous pouvez aller chercher un "Archer" depuis votre deck ou votre défausse et l'ajouter à votre main. Cette carte devient son master.
+PD027;Perso;Kotomine Kirei;Fate Series;5;5;6;Lorsque cette carte est posée, vous pouvez aller chercher un "Lancer" ou "Gilgamesh" depuis votre deck et l'ajouter à votre main. Cette carte devient son master.
+PD028;Perso;Archer;Fate Series;3;6;5;Si cette carte détruit un personnage adverse au combat, elle peut attaquer de nouveau.
+PD029;Perso;Emiya Shirou;Fate Series;1;2;2;Lorsque cette carte est posée, vous pouvez aller chercher un "Saber" depuis votre deck ou votre défausse et l'ajouter à votre main. Cette carte en devient le master.
+PD030;Perso;Lancer;Fate Series;4;4;6;Si cette carte attaque une carte coûtant moins d'énergie, détruisez la carte adverse avant le calcul des dommages.
+PD031;Sort;Graal;Fate Series;X;X;3;Défaussez deux cartes de votre main. Ajoutez une carte depuis votre deck à votre main.
+PD032;Sort;Pendentif de Rin;Fate Series;X;X;3;Au prochain tour uniquement, vous aurez 1 point d'énergie supplémentaire.
+PD033;Héros;Araragi Koyomi;Monogatari Series;X;30;X;Sacrifiez 5 HP pour ajouter une carte de Monogatari Series de votre deck à votre main.
+PD034;Perso;Kiss-Shot Acerola-Orion Heart-Under-Blade;Monogatari Series;5;5;9;Ciblez un personnage sur le terrain adverse et prenez-en le contrôle. Vous ne pouvez utiliser cet effet qu'une seule fois par "Kiss-Shot".
+PD035;Perso;Oshino Shinobu;Monogatari Series;5;5;7;Vous pouvez sacrifier 3 HP de votre héros pour que cette carte gagne 2/2. Vous ne pouvez utiliser cet effet qu'une seule fois par "Oshino Shinobu".
+PD036;Perso;Hachikuji Mayoi;Monogatari Series;4;4;8;Une fois seulement, si cette carte est dans votre cimetière vous pouvez la reposer sur votre terrain en payant la moitié de son coût d'origine.
+PD037;Perso;Black Hanekawa;Monogatari Series;6;6;8;Si "Nuit" et "Hanekawa Tsubasa" sont sur le terrain, vous pouvez sacrifier cette dernière pour poser cette carte gratuitement.
+PD038;Perso;Hanekawa Tsubasa;Monogatari Series;2;3;4;Lorsque cette carte est posée, piochez 2 cartes. Si l'une d'elles est "Oshino Meme", révélez-la et piocher une carte supplémentaire.
+PD039;Perso;Kanbaru Suruga;Monogatari Series;3;4;5;Gagne 2/0 si "Nuit" est sur le terrain.
+PD040;Perso;Ononoki Yotsugi;Monogatari Series;3;2;5;Le coût des cartes de Monogatari Series dans votre main est réduit de 1 tant que cette carte est sur votre terrain.
+PD041;Perso;Sengoku Nadeko;Monogatari Series;1;2;6;Lorsque cette carte est posée, détruisez un personnage adverse ayant maximum 3 points d'attaque. Ajoutez les statistiques de la carte détruite à cette carte.
+PD042;Perso;Senjougahara Hitagi;Monogatari Series;2;3;4;Si votre Héros est "Araragi Koyomi" et qu'il subit des dégâts de combat alors qu'il possède moins de 50% de sa vie, détruisez le personnage attaquant.
+PD043;Sort;Kaiki Deishuu;Monogatari Series;X;X;3;Récupérez 1 point d'énergie. Votre adversaire perdra 1 point d'énergie maximum durant son prochain tour uniquement.
+PD044;Sort;Nuit;Monogatari Series;X;X;3;Terrain: Les personnages de Monogatari Series gagnent 1/0.
+PD045;Sort;Gaen Izuko;Monogatari Series;X;X;2;Regardez la main de l'adversaire si votre héros possède moins de 50% de ses HP.
+PD046;Sort;Oshino Meme;Monogatari Series;X;X;2;Tous les personnages de Monogatari Series sur votre terrain gagnent 1/1 jusqu'à la fin du tour
+PD047;Héros;Shimarin;Yuru Camp△;X;30;X;Vous pouvez choisir de ne pas subir l'effet d'un terrain.
+PD048;Perso;Shima Rin;Yuru Camp△;3;3;6;Lorsque cette carte est posée, doublez ses statistiques si vous n'avez pas de personnages sur les cases adjacentes à celle-ci.
+PD049;Perso;Kagamihara Nadeshiko;Yuru Camp△;3;4;5;Tant que vous contrôlez cette carte et que vous possédez un terrain, vous disposez d'un énergie supplémentaire. (Il ne peut y avoir qu'un seul effet de "Kageyama Nadeshiko" à la fois.)
+PD050;Perso;Inuyama Aoi;Yuru Camp△;2;4;5;Si un terrain est en jeu, cette carte gagne 1/0.
+PD051;Perso;Oogaki Chiaki;Yuru Camp△;2;4;6;Lorsque cette carte est posée, vous pouvez ajouter, depuis votre deck, un personnage de Yuru Camp△ à votre main.
+PD052;Perso;Saitou Ena;Yuru Camp△;2;3;3;Si cette carte est attaquée alors qu'elle est en zone de défense, elle contre-attaque le personnage attaquant.
+PD053;Sort;Tente;Yuru Camp△;X;X;2;Choisissez un Terrain dans votre deck et ajoutez-le à votre main.
+PD054;Sort;Mont fuji;Yuru Camp△;X;X;2;Terrain: Tous les personnages de Yuru Camp△ sont soignés de 1 HP au début de votre tour.
+PD055;Sort;Scooter;Yuru Camp△;X;X;5;Équipable à un personnage de Yuru Camp△ uniquement. Le personnage équipé peut attaquer 2 fois par tour.
+PD056;Héros;Okabe Rintarou;Steins_Gate;X;30;X;À chaque début de tour, vous pouvez décider de remettre la carte piochée dans le deck, mélanger et piocher une nouvelle carte. Vous ne pourrez pas piocher d'autre carte ce tour.
+PD057;Perso;Makise Kurisu;Steins_Gate;1;2;2;Tous vos sorts coûtent 1 d'énergie en moins (cummulable). Si votre Héros est "Okabe Rintarou" vos personnages et vos sorts coûtent 1 d'énergie en moins (non cummulable).
+PD058;Perso;Shiina Mayuri;Steins_Gate;3;4;6;Si votre Héros est "Okabe Rintarou", soignez votre Héros de 5 HP à la pose de cette carte et infligez 5 HP à votre Héros lorsque cette carte va du terrain à la défausse.
+PD059;Perso;Hiyajo Maho;Steins_Gate;2;2;3;Lorsque cette carte est posée, ciblez un "Amadeus" dans votre deck et ajoutez-le à votre main.
+PD060;Perso;Amane Suzuha;Steins_Gate;3;4;5;Cette carte ne prend pas de dégâts lorsqu'elle attaque un personnage en zone d'attaque.
+PD061;Perso;Hashida Itaru;Steins_Gate;2;4;5;Un personnage aléatoire de votre adversaire perd 0/1. Cet effet n'est utilisable qu'une fois par tour.
+PD062;Perso;Urushibara Ruka;Steins_Gate;3;3;5;Gagne 0/2 lorsque cette carte est posée en zone de défense ou 2/0 en zone d'attaque.
+PD063;Sort;Amadeus;Steins_Gate;X;X;5;Ciblez un personnage dans votre défausse puis mélangez-le à votre deck.
+PD064;Sort;D-mail;Steins_Gate;X;X;3;Regardez les 3 prochaines cartes de votre deck et reposez-les dans l'ordre de votre choix.
+PD065;Héros;Kobayashi;Kobayashi;X;40;X;Une seule fois, vous pouvez aller chercher une carte Kobayashi de votre deck et l'ajouter à votre main.
+PD066;Perso;Tohru;Kobayashi;6;6;7;Lorsque cette carte est posée, vous pouvez aller chercher un autre personnage de Kobayashi dans votre deck et l'ajouter à votre main.
+PD067;Perso;Kamui Kanna;Kobayashi;4;3;4;Lorsque cette carte est posée, vous pouvez poser une "Saikawa Riko" depuis votre main sans coût.
+PD068;Perso;Rukoa;Kobayashi;4;5;6;Gagne +1/+2 pour chaque "Magatsuchi Shouta" sur votre terrain.
+PD069;Perso;Fafnir;Kobayashi;6;7;6;Perd 1/0 à la fin de chacun de vos tours.
+PD070;Perso;Elma;Kobayashi;6;6;7;Si "Tohru" est sur votre terrain, ces deux personnages perdent 0/1. N'appliquez pas cet effet si votre Héros est "Kobayashi".
+PD071;Perso;Magatsuchi Shouta;Kobayashi;1;1;2;Tant que cette carte est sur le terrain le coût des cartes Kobayashi et réduit de 1.
+PD072;Perso;Saikawa Riko;Kobayashi;1;1;2;Si "Kamui Kanna" est sur votre terrain, celle-ci ne peut pas être ciblée par une attaque. De plus cette carte gagne 3/0.
+PD073;Sort;Plaine ;Kobayashi;X;X;2;Terrain: Annule les effets négatifs que subissent les personnages sur votre terrain.
+PD074;Héros;Satou Kazuma;KonoSuba;X;30;X;Lorsque cette carte est attaquée par un personnage féminin, ce dernier perd 1 HP.
+PD075;Perso;Megumin;KonoSuba;4;4;6;Une seule fois par tour, au lieu d'attaquer avec cette carte, dépensez 2 énergies pour infliger 2 points de dégâts à tous les personnages adverse.
+PD076;Perso;Aqua;KonoSuba;2;4;5;Lorsque cette carte est posée, offre 0/1 aux alliés indemnes et rend jusqu'à 0/2 aux alliés bléssés
+PD077;Perso;Chris ;KonoSuba;4;5;8;Lorsque cette est posée, ciblez un personnage sur le terrain adverse et prenez-en le contrôle jusqu'à la fin du tour.
+PD078;Perso;Darkness;KonoSuba;0;4;3;Gagne 1/0 chaque fois que cette carte subit des dégâts
+PD079;Perso;Beldia;KonoSuba;6;6;9;Lorsque cette carte est en zone de défense, elle doit être ciblée par toutes les attaques adverse. Si cette carte attaque, les personnages adjacents à la cible perdent 1 hp.
+PD080;Sort;Explosion;KonoSuba;X;X;7;Détruisez tous les personnages sur le terrain.
+PD081;Sort;Wiz;KonoSuba;X;X;4;Ciblez une colonne adverse, le personnage attaquant s'y trouvant ne peut pas attaquer durant le prochain tour de votre adversaire et le défenseur subit 2 points de dégâts.
+PD082;Sort;Eris;KonoSuba;X;X;3;Alternez la position de deux personnages sur le terrain de votre choix.
+PD083;Héros;Lyza;Made in Abyss;X;35;X;Vous n'êtes pas affecté par "L'abysse" si celle-ci est sur le terrain.
+PD084;Perso;Ouzen;Made in Abyss;7;8;9;Cette carte doit être ciblée par toutes les attaques adverse.
+PD085;Perso;Nanachi;Made in Abyss;4;5;7;Si "L'abysse" est en jeu, récupérez une "Mitty" depuis le deck et réduisez son coût à 0 ce tour.
+PD086;Perso;Regu;Made in Abyss;4;2;4;Si une "Riko" est ciblée par une attaque adverse, annulez l'attaque, infligez 1 point dégât à tous les attaquants adverses et renvoyez cette carte dans votre main.
+PD087;Perso;Riko;Made in Abyss;2;4;4;Lorsque cette carte est posée, vous pouvez cibler un "Regu" de votre défausse et le poser sur votre terrain.
+PD088;Sort;Mitty;Made in Abyss;X;X;3;Ciblez un personnage adverse, il devient une "Mitty" 2/2.
+PD089;Sort;Feuillage embrasé;Made in Abyss;X;X;3;Équipement: Les attaques du personnage équipé infligent 1 point de dégât aux personnages étant adjacents au personnage attaqué.
+PD090;Sort;Cocon ;Made in Abyss;X;X;3;Si "L'abysse" est en jeu, ciblez une carte dans votre défausse et renvoyez-la dans votre deck, puis mélangez le deck.
+PD091;Sort;L'abysse;Made in Abyss;X;X;2;Terrain: Chaque joueur, à la fin de son tour, subit 1 dégât par carte qu'il a pioché durant son tour.
+PD092;Héros;Bunny Mai;AoButa;X;30;X;Vous subissez 1 HP en moins à chaque attaque.
+PD093;Perso;Azusagawa Sakuta;AoButa;3;4;7;Gagne 1/0 pour chaque personnage de AoButa sur votre terrain (hormis cette carte).
+PD094;Perso;Sakurajima Mai;AoButa;5;6;8;Cette carte peut attaquer directement le héros adverse.
+PD095;Perso;Koga Tomoe;AoButa;1;6;7;Une fois par tour, vous pouvez cibler un personnage de votre défausse ayant été détruit au combat le tour précédent et le poser sur votre terrain.
+PD096;Perso;Toyohama Nodoka;AoButa;3;4;7;Lorsque cette carte est posée, vous pouvez copier les statistiques d'un personnage sur le terrain.
+PD097;Perso;Azusagawa Kaede;AoButa;1;2;2;Une fois par tour, vous pouvez renvoyer un personnage de votre terrain à la main de son propriétaire.
+PD098;Perso;Futaba Rio;AoButa;1;3;3;Lorsque cette carte est posée, crée une copie de cette carte sans effet en zone de défense. La copie ainsi créée ne peut pas gagner de statistiques.
+PD099;Perso;Kamisato Saki;AoButa;2;3;4;Si votre adersaire utilise un sort ou un effet de personnage pour prendre le contrôle d'un de vos personnages, vous pouvez défausser cette carte depuis votre main ou le terrain pour annuler l'effet et détruire la carte.
+PD100;Sort;Bunny Suit;AoButa;X;X;1;Ciblez un personnage sur votre terrain, il ne pourra pas être ciblé par un sort ou une attaque jusqu'au début de votre prochain tour.
+PD101;Héros;Limulu Tempest (Version humaine);Tensura;X;40;X;Utilisez 2 énergies pour offrir 1/1 à un personnage sur votre terrain. (Une seule fois par personnage.)
+PD102;Perso;Millim Nava;Tensura;6;7;8;Cette carte inflige 2 dégâts supplémentaires si elle attaque une carte ayant déjà attaqué un de vos personnages sur le terrain.
+PD103;Perso;Limulu Tempest (Version slime);Tensura;5;5;8;Si cette carte détruit un personnage à l'issue d'un combat, vous pouvez récupérer l'effet de ce dernier jusqu'à la fin du tour.
+PD104;Perso;Shizue Izawa ;Tensura;4;4;6;Une seule fois, gagne 3/3 si cette carte a moins de la moitié de ses HP.
+PD105;Perso;Tempest Veldora;Tensura;6;6;8;Une seule fois, tant que cette carte est sur votre terrain, vous pouvez annuler l'activation d'un sort et le détruire.
+PD106;Perso;Benimaru;Tensura;4;5;6;Une fois par tour, vous pouvez dépenser 2 énergies pour infliger 1 dégât à tous les personnages adverses.
+PD107;Perso;Gobuta;Tensura;2;2;3;Cette carte ne subit pas de dégâts lorsqu'elle attaque un personnage en zone d'attaque.
+PD108;Perso;Hakurou;Tensura;3;2;3;Offre 1/0 aux personnages alliés adjacents dans la zone d'attaque.
+PD109;Perso;Riguldo ;Tensura;4;5;8;Gagne 2/2 si votre Héros est "Limulu Tempest".
+PD110;Perso;Shion;Tensura;3;4;5;Lorsque cette carte est posée, si elle est en zone d'attaque, le personnage allié se situant dans la même colonne gagne 0/2.
+PD111;Sort;Shuna;Tensura;X;X;5;Soignez votre Héros de 3 HP et récupérez 1 d'énergie.
+PD112;Sort;Nom;Tensura;X;X;4;Prenez le controle d'un personnage adverse jusqu'à la fin de votre tour.
+PD113;Sort;Ranga ;Tensura;X;X;6;Infligez 5 dégâts à un personnage adverse de votre choix 
+PD114;Sort;Kurobee;Tensura;X;X;3;Donne 1/1 à un personnage de votre choix
+PD115;Sort;Souei;Tensura;X;X;3;Regardez la main de votre adversaire.
+PD116;Sort;Kaijin;Tensura;X;X;2;Ciblez un équipement dans votre deck et ajoutez-le à votre main.
+PD117;Héros;Dola Stephanie;No Game No Life;X;40;X;Si "Sora" et "Shiro" OU "Dola Riku" et "Dola Schwi" sont dans la même zone, piochez une carte supplémentaire au début de chaque tour.
+PD118;Perso;Dola Couronne;No Game No Life;2;6;6;Votre adversaire ne peut pas cibler avec un sort ou un effet de personnage une carte ayant "Dola" dans son nom, excepté cette carte.
+PD119;Perso;Shiro;No Game No Life;5;2;6;Lorsque cette carte est posée sur le terrain, vous pouvez poser une carte de No Game No Life depuis votre main sans payer le coût de celle-ci.
+PD120;Perso;Sora;No Game No Life;2;5;8;Lorsque cette carte est posée sur le terrain, vous pouvez poser une "Shiro" depuis votre main sans payer le coût de celle-ci.
+PD121;Perso;Dola Schwi;No Game No Life;4;3;6;Si cette carte est envoyé du terrain à la défausse, récupérez une "Shiro" depuis votre deck à votre main.
+PD122;Perso;Jibril;No Game No Life;2;4;4;Cette carte peut attaquer directement le Héros adverse.
+PD123;Perso;Zell Chlammy;No Game No Life;1;1;1;Si vous devez lancer un dé, vous pouvez réduire ou augmenter le résultat de 1. Si vous devez lancer une pièce, vous pouvez la relancer une fois. Utilisable une fois par tour.
+PD124;Perso;Dola Riku;No Game No Life;4;3;6;Si cette carte est envoyé du terrain à la défausse, récupérez un "Sora" depuis votre défausse à votre main.
+PD125;Perso;Hatsuse Izuna;No Game No Life;2;2;5;Lorsque cette carte est posée sur le terrain, ciblez un sort et détruisez-le.
+PD126;Sort;Nilvalen Feel;No Game No Life;X;X;4;Regardez la main adverse et copiez un sort de sa main. Vous ne pouvez pas utiliser le sort copié durant ce tour.
+PD127;Sort;Teto;No Game No Life;X;X;3;Terrain: Si un joueur attaque un personnage, chacun lance un dé sur le coût en énergie de son personnage en combat. Le joueur avec le plus faible lancé défausse son personnage.
+PD128;Sort;Plateau d'échecs;No Game No Life;X;X;3;Terrain: Une fois par tour, le possesseur de cette carte peut déplacer un de ses personnages sur le terrain.
+PD129;Héros;Naruzou Machio (version normale);Dumbbell;X;40;X;Offre 1/1 à tous vos personnage féminin lorsqu'ils sont posés.
+PD130;Perso;Naruzou Machio (version bodybuilder);Dumbbell;7;8;8;Cette carte inflige des dégâts perçants.
+PD131;Perso;Souryuuin Akemi;Dumbbell;2;2;4;Lorsque cette carte est posée, gagne 1/0 pour chaque homme dans la zone d'attaque adverse et 0/1 pour chaque homme dans sa zone défensive.
+PD132;Perso;Sakura Hibiki;Dumbbell;2;1;2;À chaque début de votre tour, gagne 1/1 (max 3 fois).
+PD133;Perso;Uehara Ayaka;Dumbbell;3;2;3;Lorsque cette carte attaque, gagne 2/0 pendant le calcul des dégâts.
+PD134;Perso;Tachibana Satomi;Dumbbell;2;5;6;Les personnages masculins adverses ne peuvent pas attaquer d'autres cartes que celle-ci.
+PD135;Perso;Zina Void;Dumbbell;3;2;3;Gagne 1/1 pour chaque "Sakura Hibiki" sur le terrain.
+PD136;Sort;Silverman Gym;Dumbbell;X;X;4;Terrain: Lorsque vous posez un personnage en zone d'attaque, celui-ci gagne 1/0.
+PD137;Sort;Régime protéiné;Dumbbell;X;X;5;Ce tour uniquement, vos personnages gagnent 2/0.
+PD138;Sort;Conseils de Machio;Dumbbell;X;X;5;Tous vos personnages regagnent 2HP.
+PD139;Héros;Sakata Gintoki;Gintama;X;40;X;Une fois par tour, vous pouvez rediriger une attaque de votre adversaire vers cette carte.
+PD140;Perso;Sakata Gintoki;Gintama;4;7;7;Gagne 3/0 si un de vos personnages a subit des dégâts tant que cette carte était sur le terrain.
+PD141;Perso;Kagura;Gintama;4;3;5;Lorsque cette carte est posée, vous pouvez poser un "Sadaharu" depuis votre deck ou votre main dans votre zone de défense.
+PD142;Perso;Kotarou Katsura;Gintama;3;3;6;Révélez un personnage de maximum 3 d'énergie de votre main, l'effet de cette carte devient celui du personnage ainsi révélé.
+PD143;Perso;Isao Kondou;Gintama;2;2;4;Choisissez une carte dans la main de l'adversaire, si cette carte est un personnage féminin, ajoutez la carte à votre main.
+PD144;Perso;Sadaharu;Gintama;1;2;2;Lorsque cette carte est posée depuis votre main, s'il y a un "Shinpachi Shimura", un "Sakata Gintoki" ou une "Kagura" sur votre terrain, cette carte gagne 1/1.
+PD145;Perso;Shinpachi Shimura;Gintama;1;1;4;Lorsque cette carte est posée, gagne 1/1 pour chaque "Sakata Gintoki", "Shinpachi Shimura", "Kagura" et "Sadaharu" que vous contrôlez.
+PD146;Perso;Sougo Okita;Gintama;4;5;6;Défaussez autant de "Mayonnaise Spéciale Hijikata" de votre main pour infliger 3 dégâts au héros adverse pour chaque carte ainsi défaussée(s).
+PD147;Perso;Taizou Hasegawa;Gintama;1;1;3;Ciblez un personnage adverse, les statistiques de cette carte deviennent 1/1 et elle n'a plus d'effet.
+PD148;Perso;Toushirou Hijikata;Gintama;5;4;6;Lorsque cette carte est posée, vous pouvez aller chercher une "Mayonnaise Spéciale Hijikata" dans votre deck et l'ajouter à votre main.
+PD149;Perso;Tsukuyo;Gintama;1;4;3;Gagne 3/0 à partir de votre prochain tour.
+PD150;Perso;Elizabeth;Gintama;3;4;5;Tant que cett ecarte est sur votre terrain, les personnages de votre adversaire subissent 1 dégât lorsqu'ils sont posés.
+PD151;Sort;Mayonaise Spéciale Hijikata;Gintama;X;X;3;Rend 4 HP à votre héros
+PD152;Sort;Shinsengumi;Gintama;X;X;4;Choisissez deux "Toushirou Hijikata", "Sougo Okita" ou "Isao Kondou" depuis votre deck et ajoutez-les à votre main.
+PD153;Héros;Taki Noboru;Hibike Euphonium;X;30;X;Tous les personnages sur votre terrain venant d'un anime musical gagnent  0/2.
+PD154;Perso;Kousaka Reina;Hibike Euphonium;1;2;3;Gagne 2/0 si "Taki Noboru" est votre Héros.
+PD155;Perso;Oumae Kumiko;Hibike Euphonium;3;3;6;Gagne 1/1 si "Kousaka Reina" est sur votre terrain.
+PD156;Perso;Tanaka Asuka;Hibike Euphonium;1;3;4;Tant que cette carte est sur votre terrain, le coût des cartes venant de Hibike Euphonium est réduit de 1.
+PD157;Perso;Ogasawara Haruka;Hibike Euphonium;3;3;5;Lorsque cette carte est posée, ciblez un personnage adverse, il ne pourra pas attaquer le prochain tour.
+PD158;Perso;Tsukamoto Shuuichi;Hibike Euphonium;2;3;4;Vous pouvez poser cette carte depuis votre main sans payer de coût si "Oumae Kumiko" est sur votre terrain 
+PD159;Perso;Katou Hazuki;Hibike Euphonium;1;2;3;Tant que cette carte est sur votre terrain tous vos personnages gagnent 1/1 à leur pose.
+PD160;Perso;Kawashima Sapphire;Hibike Euphonium;1;1;2;Tant que cette carte est sur votre terrain tous les personnages adverses perdent 1/0.
+PD161;Perso;Nakagawa Natsuki;Hibike Euphonium;2;2;3;Vous pouvez poser cette carte sans coût s'il y a au moins 3 personnages d'Hibike Euphonium sur votre terrain.
+PD162;Sort;Fanfare;Hibike Euphonium;X;X;4;Terrain: Offre 1/1 aux personnages provenants d'animes musicaux.

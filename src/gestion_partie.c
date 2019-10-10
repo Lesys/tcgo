@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "../include/gestion_partie.h"
 
 int lancer_une_partie() {
@@ -31,17 +32,23 @@ int lancer_une_partie() {
 				} while (retour == 4);
 
 				if (!retour) {
-					retour = joueur_set_deck(joueur, p); /* Ajout du deck au joueur */
+					retour = pioche_melanger(p); /* Mélange de la pioche avant de la mettre au joueur */
 
 					if (!retour) {
-						retour = pioche_choisir_heros(joueur); /* Choix du héros du joueur */ /* TODO */
+						retour = joueur_set_deck(joueur, p); /* Ajout du deck au joueur */
 
 						if (!retour) {
-							retour = joueur_get_suivant(joueur, &j_tmp);
+							retour = pioche_choisir_heros(joueur); /* Choix du héros du joueur */ /* TODO */
 
 							if (!retour) {
-								joueur = j_tmp;
-								j_tmp = NULL;
+								retour = joueur_get_suivant(joueur, &j_tmp);
+
+								if (!retour) {
+									joueur = j_tmp;
+									j_tmp = NULL;
+								}
+								else
+									retour = 6;
 							}
 							else
 								retour = 5;
@@ -64,6 +71,42 @@ int lancer_une_partie() {
 	else
 		retour = 1;
 
+	if (!retour) { /* S'il n'y a pas eu de problème dans la configuration des joueurs */
+		for (i = 1; !retour && i <= NB_JOUEUR_MAX; i++) {
+		retour = pioche_piocher_main_depart(joueur);
+
+		if (!retour) {
+			Pioche* deck = NULL, *hand = NULL;
+			retour = joueur_get_deck(joueur, &deck);
+
+			if (!retour) {
+				pioche_afficher(deck);
+
+				retour = joueur_get_main(joueur, &hand);
+
+				if (!retour) {
+					pioche_afficher(hand);
+
+					retour = joueur_get_suivant(joueur, &j_tmp);
+
+					if (!retour) {
+						joueur = j_tmp;
+						j_tmp = NULL;
+					}
+					else
+						retour = 10;
+				}
+				else
+					retour = 9;
+			}
+			else
+				retour = 8;
+		}
+		else
+			retour = 7;
+		}
+	}
+
 	joueur_liste_detruire(&joueur);
 
 	return retour;
@@ -72,6 +115,7 @@ int lancer_une_partie() {
 int menu() {
 	int retour = 0;
 	int choix = -1;
+	char buf[10];
 	Pioche* p = NULL;
 
 	printf("Bienvenue sur le jeu du TCGO du serveur Mini-jeux Manga/Animes.\n\n");
@@ -85,7 +129,15 @@ int menu() {
 
 			printf("Que souhaitez-vous faire?\n");
 			printf("1°) Faire un duel\n2°) Edition de deck\n0°) Quitter\n\nVotre choix: ");
-			scanf("%d", &choix);
+			scanf("%s", buf);
+
+			if (!isdigit(*buf)) {
+				choix = -2;
+//				while (getchar() != '\n');
+			}
+			else
+				choix = atoi(buf);
+
 		} while ((choix < 1 || choix > 2) && choix != 0);
 
 		switch (choix) {
