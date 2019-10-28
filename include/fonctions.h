@@ -13,7 +13,7 @@
 #define LISTE_CARTES_EMPLACEMENT "include/cartes.tcgo"
 
 #define NB_DECK_MAX 40 /* Nombre de cartes maximum pour former un deck */
-#define TAILLE_REF 5
+#define TAILLE_REF 6
 #define TAILLE_NOM_FICHIER 15
 #define DELIMITEUR_CHAINE ';'
 

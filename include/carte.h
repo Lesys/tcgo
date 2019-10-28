@@ -1,8 +1,19 @@
 #ifndef CARTE_H
 #define CARTE_H
 
+#include <string.h>
 #include "stat.h"
 /*#include "effet.h"*/
+
+#define HEROS "Héros"
+#define PERSONNAGE "Perso"
+#define SORT "Sort"
+
+typedef enum type_carte{TYPE_HEROS = 0, TYPE_PERSONNAGE, TYPE_SORT} Type_Carte;
+
+/* Macro retournant le type de la carte (SORT par défaut) */
+#define Type_Carte_fnc(type) (strcmp(type, HEROS) == 0? TYPE_HEROS : (strcmp(type, PERSONNAGE) == 0? TYPE_PERSONNAGE : TYPE_SORT))
+#define Type_Carte_fnc_inv(type) (type == TYPE_HEROS? HEROS : (type == TYPE_PERSONNAGE? PERSONNAGE : SORT))
 
 /* Structure de pile */
 typedef struct carte Carte;
@@ -27,12 +38,11 @@ typedef struct effet {
 
 typedef enum utilisation{RIEN_UTILISATION = 0, INSTANT, TERRAIN, EQUIPEMENT, UNIQUE} Utilisation;
 
-/*typedef enum type_carte{HEROS = 0, PERSONNAGE, SORT} Type_Carte;*/
-
 
 struct carte {
 	/* Informations de la carte */
 	char* ref; /** < Référence de la carte (ex: PD-001) */
+	Type_Carte type; /** < Type de carte (enum) */
 	char* nom_carte; /* < Le nom de la carte */
 	char* nom_anime; /** < Le nom de l'animé correspondant */
 	int cout; /** < Coût en énergie (-1 si HEROS, ne peut pas être < à 0 si SORT ou PERSONNAGE) */
@@ -62,6 +72,9 @@ int carte_null(Carte*);
 int carte_get_ref(Carte*, char**);
 int carte_set_ref(Carte*, char*);
 
+int carte_get_type(Carte*, Type_Carte*);
+int carte_set_type(Carte*, Type_Carte);
+
 int carte_get_nom(Carte*, char**);
 int carte_set_nom(Carte*, char*);
 
@@ -89,7 +102,7 @@ int carte_set_chemin(Carte*, char*);
 
 int carte_copier(Carte*, Carte**);
 int carte_detruire(Carte**);
-int carte_init(Carte**, char*, char*, char*, int /*, Effet */, Utilisation, Stat, char*, Carte*);
+int carte_init(Carte**, char*, Type_Carte, char*, char*, int /*, Effet */, Utilisation, Stat, char*, Carte*);
 
 
 #endif

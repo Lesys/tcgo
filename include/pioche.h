@@ -39,14 +39,18 @@ int pioche_nb_carte(Pioche*, int*);
 int pioche_remettre(Pioche*, Carte*);
 int pioche_enlever_par_ref(Pioche*, char*, Carte**); /* Pour enlever une carte, il faut "sauvegarder" la carte précédente de la pile pour pouvoir changer son "prec" */
 
+int pioche_retirer_tous_types(Pioche**, Type_Carte); /* Retire toutes les cartes correspondantes au type passé en paramètre */
 int pioche_piocher_main_depart(Joueur*); /* Permet d'initialiser la main du joueur avec le nombre de carte à piocher au début du jeu */
-int pioche_choisir_heros(Joueur*);
+int pioche_afficher_all_heros(Pioche*);
+int pioche_choisir_heros(Pioche**);
+int pioche_recup_heros(Pioche*, Carte**);
 int pioche_ref_presente(Pioche*, char*);
 int pioche_sauvegarder(Pioche*);
 int pioche_charger(Pioche**);
 int pioche_recup_par_ref(Pioche*, char*, Carte**);
 int creer_deck(Pioche**);
 
+int pioche_copier(Pioche**, Pioche*);
 int pioche_detruire(Pioche**);
 int pioche_init(Pioche**, int, char*);
 int pioche_init_vide(Pioche**);

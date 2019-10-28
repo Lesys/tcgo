@@ -4,6 +4,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <ctype.h>
 
 #include "../include/pioche.h"
 
@@ -56,8 +57,9 @@ void pioche_afficher(Pioche* p) {
 	Carte* c = NULL;
 	Carte* tmp = NULL;
 	int cmp = 1;
+	int retour = 0;
 
-	int retour = pioche_get_sommet(p, &c); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+	retour = pioche_get_sommet(p, &c); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
 
 	if (!retour) { /* Si on a bien récupéré le sommet et qu'il n'est pas NULL */
 		if (c != NULL) {
@@ -322,8 +324,7 @@ int pioche_echanger_carte(Pioche* dest, Pioche* src) {
 	return retour;
 }
 
-int pioche_melanger(Pioche* p)
-{
+int pioche_melanger(Pioche* p) {
 	int retour = 0;
 
 	if (!pioche_null(p)) {
@@ -439,28 +440,42 @@ int pioche_melanger(Pioche* p)
 }
 
 int pioche_nb_carte(Pioche* p, int* nb_carte) {
+	*nb_carte = 0;
 	int retour = 0;
+	Type_Carte type;
 
 	if (!pioche_null(p)) {
 		if (!pioche_vide(p)) {
-			Carte* tmp = NULL;
-			retour = pioche_get_sommet(p, &tmp); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+			Carte* tmp = NULL, *c = NULL;
+			retour = pioche_get_sommet(p, &c); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
 
 			if (!retour) { /* Si on a bien récupéré le sommet*/
-				*nb_carte = 1;
+//				*nb_carte = 1;
 
-				while (!retour && tmp->prec != NULL) { /* Tant que la prochaine carte (prec) n'est pas NULL */
-/*fprintf(stderr, "Avant get_prec:\n");
-					carte_afficher(tmp);*/
-					retour = carte_get_prec(tmp, &tmp);
-/*fprintf(stderr, "Après get_prec:\n");
-					carte_afficher(tmp);*/
+				do {
+					tmp = NULL;
+					retour = pioche_depiler(p, &tmp);
 
-					if (!retour)
-						(*nb_carte)++;
+					if (!retour) {
+						retour = carte_get_type(tmp, &type);
+
+						if (!retour) {
+//							fprintf(stderr, "Type: %s\n", Type_Carte_fnc_inv(type));
+							if (type != TYPE_HEROS)
+								(*nb_carte)++;
+//							else
+//								fprintf(stderr, "CARTE HEROS NON COMPTEE\n");
+						}
+						else
+							retour = 4;
+					}
 					else
 						retour = 3;
-				}
+
+				} while (!retour && !pioche_vide(p)); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) */
+
+				pioche_set_sommet(p, c); /* On remet le sommet en place après avoir tout dépilé */
+
 			}
 			else
 				retour = 2; /* Problème récupération sommet */
@@ -529,6 +544,7 @@ int pioche_enlever_par_ref(Pioche* p, char* ref, Carte** c) {
 	int retour = 0;
 
 	if (!pioche_null(p)) {
+//		if (pioche_ref_presente(p, ref) {
 		Carte* sommet = NULL;
 		retour = pioche_get_sommet(p, &sommet); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
 
@@ -600,6 +616,7 @@ int pioche_enlever_par_ref(Pioche* p, char* ref, Carte** c) {
 
 int pioche_recup_par_ref(Pioche* p, char* ref, Carte** c) {
 	int retour = 0;
+//	Pioche* p = *pp;
 
 	if (!pioche_null(p)) {
 		Carte* sommet = NULL;
@@ -633,8 +650,22 @@ int pioche_recup_par_ref(Pioche* p, char* ref, Carte** c) {
 			free(ref2);
 			ref2 = NULL;
 
-			if (trouve) /* Si on a trouvé la carte; on l'enlève et on la mets dans le paramètre */
+			if (trouve) { /* Si on a trouvé la carte; on l'enlève et on la mets dans le paramètre */
 				*c = tmp;
+
+/*				if (tmp == sommet) {
+					retour = carte_get_prec(sommet, &tmp);
+
+					if (!retour) {
+						retour = pioche_set_sommet(p, tmp);
+
+						if (retour)
+							retour = 5;
+					}
+					else
+						retour = 4;
+				}*/
+			}
 			else
 				retour = 3; /* La ref n'était pas dans la Pioche */
 		}
@@ -645,6 +676,93 @@ int pioche_recup_par_ref(Pioche* p, char* ref, Carte** c) {
 		retour = 1; /* Pioche NULL */
 
 	return retour;
+}
+
+int pioche_recup_heros(Pioche* p, Carte** heros) {
+	if (DEBUG)
+		fprintf(stderr, "On est dans recup_héros\n");
+
+fprintf(stderr, "Pioche début recup_heros:\n");
+pioche_afficher(p);
+	Carte* c = NULL;
+	Carte* tmp = NULL;
+	Carte* sommet = NULL; // Pour le premier (si c'est un héros en premier, il faut pouvoir l'enlever de la pioche)
+	char* ref = NULL;
+	Type_Carte type;
+	int retour = 0;
+//	*heros = NULL; // Sort avec NULL si aucun héros trouvé
+
+	if (!pioche_null(p)) {
+		retour = pioche_get_sommet(p, &sommet); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+		c = sommet;
+
+		do {
+			retour = carte_get_type(c, &type);
+
+			if (!retour && type == TYPE_HEROS) {
+				retour = carte_get_prec(c, &tmp);
+
+				if (!retour)
+					c = tmp;
+			}
+		} while (type == TYPE_HEROS);
+
+		tmp = NULL;
+
+		if (!retour) { /* Si on a bien récupéré le sommet et qu'il n'est pas NULL */
+			if (c != NULL) {
+				do {
+					tmp = NULL;
+					retour = pioche_depiler(p, &tmp);
+
+					if (!retour) {
+						retour = carte_get_type(tmp, &type); // Récupère le type de la carte et regarde si c'est un héros
+
+						if (!retour && type == TYPE_HEROS) {
+							retour = carte_get_ref(tmp, &ref);
+
+							if (!retour) {
+								if (sommet == tmp)
+									retour = pioche_set_sommet(p, sommet); // Remet la pioche pour pouvoir enlever la carte
+								else
+									retour = pioche_set_sommet(p, c);
+
+								if (!retour) {
+									retour = pioche_enlever_par_ref(p, ref, heros); // Enlève la carte héros
+
+									if (retour)
+										retour = 4; //TODO
+								}
+							}
+						}
+/*						else
+							printf("La carte n'est pas un héros\n");*/
+					}
+					else
+						retour = 3;
+
+				} while (!retour && !pioche_vide(p)); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) */
+
+				if (pioche_vide(p)) {
+					pioche_set_sommet(p, c); /* On remet le sommet en place après avoir tout dépilé */
+				}
+			}
+			else
+				printf("Cette pioche est vide\n");
+		}
+		else
+			if (DEBUG)
+				fprintf(stderr, "Problème récupération du sommet\n");
+	}
+	else
+		printf("La pioche est vide, impossible de l'afficher\n");
+
+	if (DEBUG)
+		fprintf(stderr, "Fin affichage Pioche\n");
+
+fprintf(stderr, "Pioche fin recup_heros:\n");
+pioche_afficher(p);
+	return 0;
 }
 
 int pioche_remettre(Pioche* p, Carte* c) {
@@ -677,39 +795,38 @@ int pioche_remettre(Pioche* p, Carte* c) {
 
 int pioche_piocher_main_depart(Joueur* j) {
 	int retour = 0, i;
-	Pioche* main = NULL, *p = NULL;
+	Pioche* hand = NULL, *p = NULL;
 	Carte* c = NULL;
+//	fprintf(stderr, "pioche_piocher_main_depart DEBUT\n");
 
 	retour = joueur_get_deck(j, &p);
 
 	if (!retour) {
 		if (!pioche_vide(p)) {
-			retour = pioche_init_vide(&main);
+			retour = pioche_init_vide(&hand);
 
 			if (!retour) {
-				for (i = 0; !retour && i < NB_CARTE_DEPART; i++) { /* Récupération des NB_CARTE_DEPART cartes en haut de la pioche pour les mettre dans la main du joueur */
+				for (i = 0; !retour && i < NB_CARTE_DEPART && !pioche_vide(p); i++) { /* Récupération des NB_CARTE_DEPART cartes en haut de la pioche pour les mettre dans la main du joueur */
 					retour = pioche_depiler(p, &c);
+
 					if (!retour) {
-						pioche_empiler(main, c);
+fprintf(stderr, "Carte %d:\n", i + 1);
+carte_afficher(c);
+						retour = pioche_empiler(hand, c);
 
 						if (retour)
 							retour = 5;
 					}
 					else
 						retour = 4;
+
 					c = NULL;
 				}
 
 				if (!retour) {
-					retour = joueur_set_main(j, main);
+					retour = joueur_set_main(j, hand);
 
-					if (!retour) {
-/*						retour = pioche_melanger(p);
-
-						if (retour)
-							retour = 8;
-*/					}
-					else
+					if (retour)
 						retour = 7;
 				}
 				else
@@ -723,19 +840,221 @@ int pioche_piocher_main_depart(Joueur* j) {
 	}
 	else
 		retour = 1;
-//TODO
+if (DEBUG)
+	fprintf(stderr, "Code erreur pioche_piocher_main_depart: %d\n", retour);
 	return retour;
 }
 
-int pioche_afficher_all_heros(Pioche** p) {
+int pioche_retirer_tous_types(Pioche** pp, Type_Carte type_param) {
+	if (DEBUG)
+		fprintf(stderr, "On est dans retirer_tous_types\n");
 
-	fprintf(stderr, "On est dans afficher_all_héros\n");
+	Pioche* p = *pp;
+	Carte* c = NULL;
+	Carte* tmp = NULL;
+	Type_Carte type;
+	char* ref = NULL;
+	int retour = 0;
+
+	if (!pioche_null(p)) {
+		retour = pioche_get_sommet(p, &c); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+
+		if (!retour) { /* Si on a bien récupéré le sommet et qu'il n'est pas NULL */
+			if (!carte_null(c)) {
+
+				Pioche* copie = NULL;
+				retour = pioche_copier(&copie, p);
+
+//fprintf(stderr, "Copie\n\n\n");
+//pioche_afficher(copie);
+				if (!retour) {
+					do {
+						tmp = NULL;
+						retour = pioche_depiler(p, &tmp);
+
+						if (!retour) {
+							retour = carte_get_type(tmp, &type);
+
+							if (!retour && type == type_param) {
+								retour = carte_get_ref(tmp, &ref);
+								carte_detruire(&tmp);
+
+								if (!retour) {
+									do {
+										retour = pioche_enlever_par_ref(copie, ref, &tmp);
+//fprintf(stderr, "Suppression: \n");
+//carte_afficher(tmp);
+										carte_detruire(&tmp);
+									} while (!retour);
+
+									free(ref);
+									ref = NULL;
+
+									if (!retour && retour == 3) /* Informe que la référence n'est pas dans la pioche */
+										retour = 0;
+									else
+										retour = 5;
+
+								}
+							}
+	/*						else
+								printf("La carte n'est pas un héros\n");*/
+						}
+						else
+							if (DEBUG)
+								fprintf(stderr, "Problème pioche_depiler\n");
+					} while (!pioche_vide(p) && !retour); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) */
+
+					pioche_detruire(pp);
+					*pp = copie;
+
+//					pioche_set_sommet(p, c); /* On remet le sommet en place après avoir tout dépilé */
+				}
+			}
+			else
+				printf("Cette pioche est vide\n");
+		}
+		else
+			if (DEBUG)
+				fprintf(stderr, "Problème récupération du sommet\n");
+	}
+	else
+		printf("La pioche est vide, impossible de l'afficher\n");
+
+	if (DEBUG)
+		fprintf(stderr, "Fin affichage Pioche\n");
+
 	return 0;
 }
 
-int pioche_choisir_heros(Joueur* p) {
+int pioche_afficher_all_heros(Pioche* p) {
+	if (DEBUG)
+		fprintf(stderr, "On est dans afficher_all_héros\n");
+
+	Carte* c = NULL;
+	Carte* tmp = NULL;
+	int cmp = 1;
+	Type_Carte type;
 	int retour = 0;
 
+	if (!pioche_null(p)) {
+		retour = pioche_get_sommet(p, &c); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+
+		if (!retour) { /* Si on a bien récupéré le sommet et qu'il n'est pas NULL */
+			if (c != NULL) {
+				do {
+					tmp = NULL;
+					retour = pioche_depiler(p, &tmp);
+
+					if (!retour) {
+						retour = carte_get_type(tmp, &type);
+
+						if (!retour && type == TYPE_HEROS) {
+							printf("Carte %d : ", cmp++);
+							carte_afficher(tmp);
+						}
+/*						else
+							printf("La carte n'est pas un héros\n");*/
+					}
+					else
+						if (DEBUG)
+							fprintf(stderr, "Problème pioche_depiler\n");
+
+				} while (tmp->prec != NULL && !retour); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) */
+
+				pioche_set_sommet(p, c); /* On remet le sommet en place après avoir tout dépilé */
+			}
+			else
+				printf("Cette pioche est vide\n");
+		}
+		else
+			if (DEBUG)
+				fprintf(stderr, "Problème récupération du sommet\n");
+	}
+	else
+		printf("La pioche est vide, impossible de l'afficher\n");
+
+	if (DEBUG)
+		fprintf(stderr, "Fin affichage Pioche\n");
+
+	return 0;
+}
+
+int pioche_choisir_heros(Pioche** pp) {
+	Pioche* p = *pp;
+	int retour = 0, trouve = 0;
+	Pioche* liste = NULL;
+	char ref[TAILLE_REF + 1];
+	Type_Carte type;
+	Carte* c = NULL, *c2 = NULL;
+
+	if (!pioche_null(p)) {
+		retour = pioche_init(&liste, 0, LISTE_CARTES_EMPLACEMENT);
+
+		if (!retour) {
+//			retour = joueur_get_pseudo(j, &pseudo);
+
+			while (!retour && !trouve) {
+				pioche_afficher_all_heros(liste);
+				printf("Votre carte Héros actuelle: ");
+				pioche_afficher_all_heros(p);
+
+				printf("\nAvec quel carte Héros voulez-vous jouer? (saisir la référence de la carte): ");
+				scanf("%10s", ref);
+
+				if (!pioche_ref_presente(liste, ref))
+					printf("La référence %s n'existe pas, retour au menu précédent.\n", ref);
+				else { /* Si la référence écrite est bien dans la liste des cartes */
+					retour = pioche_recup_par_ref(liste, ref, &c);
+
+					if (!retour) {
+						retour = carte_get_type(c, &type);
+
+						if (!retour && type == TYPE_HEROS) {
+							retour = pioche_retirer_tous_types(pp, TYPE_HEROS); /* Suppression de tous les Héros du deck */
+							p = *pp;
+							trouve = 1;
+//fprintf(stderr, "Après pioche_retirer_tous_types\n");
+//pioche_afficher(p);
+							if (!retour) {
+								retour = carte_copier(c, &c2);
+
+								if (!retour) {
+									retour = pioche_empiler(p, c2);
+
+									if (retour)
+										retour = 7;
+								}
+								else
+									retour = 6;
+							}
+							else
+								retour = 5;
+						}
+						else if (retour)
+							retour = 4;
+						else /* Pas un héros */
+							printf("La carte %s n'est pas une carte Héros.\nRetour au menu précédent.\n", ref);
+					}
+					else
+						retour = 1;
+
+					c = NULL;
+					c2 = NULL;
+				}
+
+			}
+
+			if (retour)
+				retour = 3;
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1;
+
+//retour = pioche_init(&liste, 0, LISTE_CARTES_EMPLACEMENT);
 	return retour;
 }
 
@@ -902,10 +1221,11 @@ int creer_deck(Pioche** p) {
 		if (!retour) {
 			printf("Début de la création de deck\n\n");
 			int choix = -1, nb = 0;
+			char buf[10];
 			char rep = '0', rep2;
 			char* ref = NULL;
 			Pioche* liste = NULL;
-			Carte* c = NULL, *c2 = NULL;
+			Carte* c = NULL, *c2 = NULL, *heros = NULL;
 
 			retour = pioche_init(&liste, 0, LISTE_CARTES_EMPLACEMENT); /* Récupération de toutes les cartes, effet etc */
 
@@ -918,9 +1238,16 @@ int creer_deck(Pioche** p) {
 						if (choix != -1)
 							printf("Veuillez faire un choix parmi les numéros proposés.\n\n");
 
-						printf("\n1°) Ajouter une carte\n2°) Retirer une carte\n3°) Sauvegarder le deck\n4°) Charger un deck\n0°) Quitter\n\nVotre choix: ");
-						scanf("%d", &choix);
-					} while ((choix < 1 || choix > 4) && choix != 0);
+						printf("\n1°) Ajouter une carte\n2°) Retirer une carte\n3°) Modifier le Héros\n4°) Sauvegarder le deck\n5°) Charger un deck\n0°) Quitter\n\nVotre choix: ");
+
+						scanf("%s", buf);
+
+						if (!isdigit(*buf)) {
+							choix = -2;
+			                        }
+						else
+							choix = atoi(buf);
+					} while ((choix < 1 || choix > 5) && choix != 0);
 
 					switch (choix) {
 						case 1: retour = pioche_nb_carte(*p, &nb);
@@ -931,7 +1258,7 @@ int creer_deck(Pioche** p) {
 
 								if (ref != NULL) {
 									printf("\nVeuillez choisir une carte à ajouter parmi les cartes ci-dessus (saisir la référence de la carte): ");
-									scanf("%5s", ref);
+									scanf("%10s", ref);
 
 									if (!pioche_ref_presente(liste, ref))
 										printf("La référence %s n'existe pas, retour au menu précédent.\n", ref);
@@ -941,9 +1268,15 @@ int creer_deck(Pioche** p) {
 										if (!retour) {
 											retour = carte_copier(c, &c2);
 
-											if (!retour)
-												pioche_empiler(*p, c2);
+											if (!retour) {
+												retour = pioche_empiler(*p, c2);
+
+												if (retour)
+													retour = 2;
+											}
 										}
+										else
+											retour = 1;
 
 										c = NULL;
 										c2 = NULL;
@@ -951,6 +1284,8 @@ int creer_deck(Pioche** p) {
 
 									free(ref);
 								}
+								else
+									printf("Problème mémoire, impossible d'allouer une chaîne de caractères\n");
 							}
 							else
 								printf("Vous ne pouvez plus ajouter de cartes dans votre deck, retour au menu précédent.\n");
@@ -963,28 +1298,39 @@ int creer_deck(Pioche** p) {
 
 								if (ref != NULL) {
 									printf("\nVeuillez choisir une carte à retirer parmi les cartes ci-dessus (saisir la référence de la carte): ");
-									scanf("%5s", ref);
+									scanf("%10s", ref);
 
 									if (!pioche_ref_presente(*p, ref))
 										printf("La carte %s n'est pas dans votre deck, retour au menu précédent.\n", ref);
 									else { /* Si la référence écrite est bien dans le deck des cartes */
 										retour = pioche_enlever_par_ref(*p, ref, &c);
 
-										if (!retour)
-											carte_detruire(&c);
+										if (!retour) {
+											retour = carte_detruire(&c);
+
+											if (retour)
+												retour = 2;
+										}
+										else
+											retour = 1;
 
 										c = NULL;
 									}
 
 									free(ref);
 								}
+								else
+									printf("Problème mémoire, impossible d'allouer une chaîne de caractères\n");
 							}
 							else
 								printf("Votre deck est vide, vous ne pouvez pas retirer de carte, retour au menu précédent.\n");
 
 							break;
 
-						case 3: retour = pioche_sauvegarder(*p);
+						case 3: retour = pioche_choisir_heros(p);
+							break;
+
+						case 4: retour = pioche_sauvegarder(*p);
 
 							if (retour) {
 								printf("Erreur lors de la sauvegarde, annulation de la sauvegarde\n");
@@ -992,7 +1338,7 @@ int creer_deck(Pioche** p) {
 							}
 							break;
 
-						case 4: do {
+						case 5: do {
 								while((rep2 = getchar()) != EOF && rep2 != '\n');
 
 								if (rep != '0' && rep != '\n')
@@ -1000,7 +1346,6 @@ int creer_deck(Pioche** p) {
 
 								printf("Si vous continuez, le deck actuel sera remplacé. Continuer? O/o - N/n\n\nVotre choix: ");
 								scanf("%c", &rep);
-
 							} while (rep != 'O' && rep != 'o' && rep != 'N' && rep != 'n');
 
 							if (rep == 'O' || rep == 'o')
@@ -1052,6 +1397,77 @@ int creer_deck(Pioche** p) {
 	}
 	else
 		retour = 1;
+
+	return retour;
+}
+
+int pioche_copier(Pioche** dest, Pioche* src) {
+	if (DEBUG)
+		fprintf(stderr, "Affichage de la Pioche:\n");
+
+	Carte* c = NULL;
+	Carte* tmp = NULL, *copie = NULL;
+	int retour = 0;
+
+	if (!pioche_null(src)) {
+		retour = pioche_get_sommet(src, &c); /* On récupère le sommet pour le remettre à la fin (pour empêcher les "pioche_depiler" d'enlever toute la pioche) */
+
+		if (!retour) { /* Si on a bien récupéré le sommet et qu'il n'est pas NULL */
+			if (!carte_null(c)) {
+				retour = pioche_init_vide(dest);
+
+				if (!retour) {
+					do {
+						tmp = NULL;
+						retour = pioche_depiler(src, &tmp);
+
+						if (!retour) {
+							retour = carte_copier(tmp, &copie);
+
+							if (!retour) {
+								retour = pioche_empiler(*dest, copie);
+
+								if (!retour)
+									copie = NULL;
+								else {
+									carte_detruire(&copie);
+									retour = 6;
+								}
+								//TODO
+							}
+							else
+								retour = 5;
+						}
+						else {
+							retour = 4;
+
+							if (DEBUG)
+								fprintf(stderr, "Problème pioche_depiler\n");
+						}
+
+					} while (tmp->prec != NULL && !retour); /* Tant qu'on peut dépiler (== la prochaine carte (prec) n'est pas NULL) */
+
+					pioche_set_sommet(src, c); /* On remet le sommet en place après avoir tout dépilé */
+				}
+				else
+					retour = 3;
+			}
+			else
+				if (DEBUG)
+					printf("Cette pioche est vide\n");
+		}
+		else {
+			retour = 2;
+
+			if (DEBUG)
+				fprintf(stderr, "Problème récupération du sommet\n");
+		}
+
+	}
+	else
+		retour = 1;
+	if (DEBUG)
+		fprintf(stderr, "Fin affichage Pioche\n");
 
 	return retour;
 }
@@ -1155,7 +1571,7 @@ int pioche_init(Pioche** p, int nb_limite_carte, char* file_name) {
 
 								/* Crée une carte avec les valeurs de la ligne */
 								/* TODO Créer une variable Stat qui prend l'atk et les hp */
-								retour = carte_init(&c, ref, nom, nom_anime, *cout != NO_STAT? atoi(cout) : COUT_NULL, RIEN_UTILISATION, stat, chemin, NULL);
+								retour = carte_init(&c, ref, Type_Carte_fnc(type_carte), nom, nom_anime, *cout != NO_STAT? atoi(cout) : COUT_NULL, RIEN_UTILISATION, stat, chemin, NULL);
 
 								if (!retour) { /* Si la carte a bien été créée, l'ajoute à la pioche */
 									retour = pioche_empiler(*p, c);
@@ -1217,6 +1633,8 @@ int pioche_init(Pioche** p, int nb_limite_carte, char* file_name) {
 			retour = 1;
 	}
 
+	if (DEBUG)
+		fprintf(stderr, "Code erreur pioche_init: %d\n", retour);
 
 	return retour;
 }

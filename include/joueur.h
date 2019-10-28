@@ -28,7 +28,7 @@ typedef struct joueur Joueur;
 struct joueur {
 	Pioche* deck; /** < Tout le paquet de carte du joueur. */
 	Pioche* hand; /** < La main du joueur pendant le jeu. */
-	Pioche* defausse;
+	Pioche* defausse; /** < La défausse du joueur pendant le jeu */
 
 	Terrain* terrain; /** < Terrain du joueur. Regroupe son héros, ses cartes personnages en zone d'attaque et défense ainsi que ses cartes sorts. */
 	char* pseudo; /** < Pseudonyme du joueur */
@@ -44,7 +44,14 @@ struct joueur {
 
 int joueur_null(Joueur*);
 
+/* Fonctions d'affichage */
+void joueur_afficher_main(Joueur*);
+void joueur_afficher_defausse(Joueur*);
+
 /* Accesseurs et mutateurs */
+
+int joueur_get_heros(Joueur*, Carte**);
+int joueur_set_heros(Joueur*, Carte*);
 
 int joueur_get_deck(Joueur*, Pioche**);
 int joueur_set_deck(Joueur*, Pioche*);
@@ -70,6 +77,9 @@ int joueur_set_suivant(Joueur*, Joueur*);
 int joueur_get_sockfd(Joueur*, int*);
 int joueur_set_sockfd(Joueur*, int);
 
+int joueur_a_abandonne(Joueur*);
+void joueur_abandonne(Joueur*);
+
 /* Permet d'envoyer une carte d'une pioche à une autre */
 int joueur_deck_vers_main(Joueur*);
 int joueur_deck_vers_defausse(Joueur*);
@@ -77,6 +87,9 @@ int joueur_main_vers_deck(Joueur*);
 int joueur_main_vers_defausse(Joueur*);
 int joueur_defausse_vers_deck(Joueur*);
 int joueur_defausse_vers_main(Joueur*);
+
+/* Fonctions booléennes */
+int joueur_is_heros_set(Joueur*);
 
 int joueur_init(Joueur**);
 /*int joueur_detruire(Joueur**);*/

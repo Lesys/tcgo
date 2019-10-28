@@ -16,6 +16,7 @@ void carte_afficher(Carte* carte) {
 		char* chaine = NULL;
 		int check = carte_get_ref(carte, &chaine);
 		int cout;
+		Type_Carte type;
 		Stat stat;
 
 		printf("\n\n");
@@ -29,6 +30,12 @@ void carte_afficher(Carte* carte) {
 				free(chaine);
 			chaine = NULL;
 
+		}
+
+		check = carte_get_type(carte, &type);
+
+		if (!check) {
+			printf("Type: %s\n", Type_Carte_fnc_inv(type));
 		}
 
 		check = carte_get_nom(carte, &chaine);
@@ -160,6 +167,29 @@ int carte_set_ref(Carte* c, char* ref) {
 		retour = 1;
 
 	return retour;
+}
+
+int carte_get_type(Carte* c, Type_Carte* type) {
+	int retour = 0;
+
+	if (!carte_null(c))
+		*type = c->type;
+	else
+		retour = 1;
+
+	return retour;
+}
+
+int carte_set_type(Carte* c, Type_Carte type) {
+	int retour = 0;
+
+	if (!carte_null(c))
+		c->type = type;
+	else
+		retour = 1;
+
+	return retour;
+
 }
 
 int carte_get_nom(Carte* c, char** nom) {
@@ -427,11 +457,12 @@ int carte_copier(Carte* src, Carte** copie) {
 
 	if (!carte_null(src)) {
 		char* ref = src->ref, *nom_carte = src->nom_carte, *nom_anime = src->nom_anime, *chemin = src->chemin;
+		Type_Carte type = src->type;
 		int cout = src->cout;
 		Utilisation utilisation = src->utilisation;
 		Stat stat = src->stat;
 
-		retour = carte_init(copie, ref, nom_carte, nom_anime, cout, utilisation, stat, chemin, NULL);
+		retour = carte_init(copie, ref, type, nom_carte, nom_anime, cout, utilisation, stat, chemin, NULL);
 
 		if (retour)
 			retour = 2;
@@ -467,7 +498,7 @@ int carte_detruire(Carte** c) {
 	return retour;
 }
 
-int carte_init(Carte** c, char* ref, char* nom_carte, char* nom_anime, int cout/*, Effet effet*/, Utilisation utilisation, Stat stat, char* chemin, Carte* prec) {
+int carte_init(Carte** c, char* ref, Type_Carte type, char* nom_carte, char* nom_anime, int cout/*, Effet effet*/, Utilisation utilisation, Stat stat, char* chemin, Carte* prec) {
 	int retour = 0;
 
 	if (!carte_null(*c))
@@ -505,7 +536,13 @@ int carte_init(Carte** c, char* ref, char* nom_carte, char* nom_anime, int cout/
 								if (!retour) {
 									retour = carte_set_prec(*c, prec);
 
-									if (retour)
+									if (!retour) {
+										retour = carte_set_type(*c, type);
+
+										if (retour)
+											retour = 10; /* Problème set type */
+									}
+									else
 										retour = 9; /* Problème set prec */
 								}
 								else

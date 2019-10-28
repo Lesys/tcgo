@@ -99,6 +99,57 @@ static int joueur_detruire(Joueur** j) {
 	return retour;
 }
 
+void joueur_afficher_main(Joueur* j) {
+	if (!joueur_null(j))
+		pioche_afficher(j->hand);
+	else
+		printf("Le joueur passé en paramètre est NULL\n");
+}
+
+void joueur_afficher_defausse(Joueur* j) {
+	if (!joueur_null(j))
+		pioche_afficher(j->defausse);
+	else
+		printf("Le joueur passé en paramètre est NULL\n");
+}
+
+/*int joueur_get_heros(Joueur* j, Carte** heros) {
+	int retour = 0;
+
+	if (!joueur_null(j)) {
+		if (!terrain_null(j->terrain)) {
+			retour = terrain_get_heros(j->terrain, heros);
+
+			if (retour)
+				retour = 3;
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1;
+
+	return retour;
+}*/
+int joueur_set_heros(Joueur* j, Carte* heros) {
+	int retour = 0;
+
+	if (!joueur_null(j)) {
+		if (!terrain_null(j->terrain)) {
+			retour = terrain_set_heros(j->terrain, heros);
+
+			if (retour)
+				retour = 3;
+		}
+		else
+			retour = 2;
+	}
+	else
+		retour = 1;
+
+	return retour;
+}
+
 int joueur_get_deck(Joueur* j, Pioche** deck) {
 	int retour = 0;
 
@@ -397,7 +448,7 @@ int joueur_a_abandonne(Joueur* j) {
 }
 
 /**
-	\fn Joueur* joueur_abandonne(Joueur* j);
+	\fn void joueur_abandonne(Joueur* j);
 	\brief Fait abandonner un Joueur
 
 	\param j Le Joueur* qu'on veut faire abandonner
